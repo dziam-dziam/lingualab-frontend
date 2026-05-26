@@ -42,6 +42,10 @@ export class SurveyService {
     return this.http.put<Question>(`${this.apiBaseUrl}/questions/${question.id}`, question);
   }
 
+  deleteQuestion(questionId: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiBaseUrl}/questions/${questionId}`);
+  }
+
   reorderQuestions(surveyId: string, questions: Question[]): Observable<Question[]> {
     return this.http.put<Question[]>(`${this.apiBaseUrl}/questions/survey/${surveyId}/order`, questions.map((question) => ({
       questionId: question.id,

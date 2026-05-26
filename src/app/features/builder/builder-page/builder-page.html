@@ -60,13 +60,25 @@
       <article class="question-card" cdkDrag (click)="selectQuestion(question)">
         <mat-icon class="drag-icon">drag_indicator</mat-icon>
 
-        <div>
+        <div class="question-content">
           <span>{{ question.type }}</span>
           <h3>{{ question.title }}</h3>
           <p>
             {{ question.description || question.placeholder || question.stimulus
             }}
           </p>
+        </div>
+
+        <div class="question-actions">
+          <button
+            mat-icon-button
+            type="button"
+            aria-label="Delete question"
+            class="delete-question-button"
+            (click)="$event.stopPropagation(); deleteQuestion(question)"
+          >
+            <mat-icon>delete</mat-icon>
+          </button>
         </div>
       </article>
       } }
@@ -152,6 +164,14 @@
 
       <button mat-flat-button type="button" (click)="saveQuestion()">
         Save question
+      </button>
+      <button
+        mat-stroked-button
+        color="warn"
+        type="button"
+        (click)="deleteQuestion(selected)"
+      >
+        Delete question
       </button>
       } @else {
       <p>Select a question to edit it.</p>

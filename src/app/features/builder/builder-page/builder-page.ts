@@ -109,6 +109,32 @@ export class BuilderPage {
     this.addQuestion(question, event.currentIndex);
   }
 
+  deleteQuestion(question: Question): void {
+    if (!question?.id) return;
+
+    this.surveyService.deleteQuestion(question.id).subscribe({
+      next: () => {
+        const updated = this.questions()
+          .filter((item) => item.id !== question.id)
+          .map((item, index) => ({ ...item, displayOrder: index }));
+
+        this.questions.set(updated);
+
+        if (this.selectedQuestion?.id === question.id) {
+          this.selectedQuestion = null;
+        }
+
+        if (updated.length > 0) {
+          this.surveyService.reorderQuestions(this.surveyId, updated).subscribe({
+            next: (questions) => this.questions.set(questions),
+            error: () => this.error.set('Question deleted, but order could not be saved.'),
+          });
+        }
+      },
+      error: () => this.error.set('Could not delete question.'),
+    });
+  }
+
   selectQuestion(question: Question): void {
     this.selectedQuestion = { ...question, options: [...question.options] };
   }

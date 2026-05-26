@@ -87,7 +87,7 @@
 
 .question-card {
   display: grid;
-  grid-template-columns: auto 1fr;
+  grid-template-columns: auto 1fr auto;
   gap: 12px;
   margin-bottom: 10px;
   padding: 14px;
@@ -114,6 +114,19 @@
 
 .drag-icon {
   color: #8493a8;
+}
+
+.question-actions {
+  display: flex;
+  align-items: start;
+}
+
+.delete-question-button {
+  color: #b42318;
+}
+
+.delete-question-button mat-icon {
+  font-size: 20px;
 }
 
 .editor {
