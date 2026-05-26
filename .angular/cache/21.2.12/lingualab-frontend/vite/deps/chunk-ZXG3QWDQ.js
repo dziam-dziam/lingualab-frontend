@@ -1,4 +1,7 @@
 import {
+  normalizePassiveListenerOptions
+} from "./chunk-WM72FBWQ.js";
+import {
   _VisuallyHiddenLoader,
   _setInnerHtml
 } from "./chunk-GNTJUIYF.js";
@@ -7,10 +10,7 @@ import {
 } from "./chunk-LYH3KWI3.js";
 import {
   BreakpointObserver
-} from "./chunk-SMTAVU2T.js";
-import {
-  normalizePassiveListenerOptions
-} from "./chunk-WM72FBWQ.js";
+} from "./chunk-2K6RCZ4K.js";
 import {
   isFakeMousedownFromScreenReader,
   isFakeTouchstartFromScreenReader
@@ -2385,4 +2385,4 @@ export {
   addAriaReferencedId,
   removeAriaReferencedId
 };
-//# sourceMappingURL=chunk-ONYCALZM.js.map
+//# sourceMappingURL=chunk-ZXG3QWDQ.js.map

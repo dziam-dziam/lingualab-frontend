@@ -12,6 +12,12 @@
   align-items: start;
 }
 
+.button-content {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
 .create-panel {
   display: grid;
   gap: 14px;
@@ -50,6 +56,16 @@
   display: flex;
   align-items: center;
   gap: 4px;
+}
+
+.delete-survey-button {
+  color: #b42318;
+}
+
+.loading-state {
+  display: grid;
+  min-height: 160px;
+  place-items: center;
 }
 
 .empty-state {

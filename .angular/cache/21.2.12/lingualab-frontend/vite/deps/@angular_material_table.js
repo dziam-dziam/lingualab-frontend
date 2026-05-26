@@ -2,7 +2,7 @@ import {
   CDK_VIRTUAL_SCROLL_VIEWPORT,
   ScrollingModule,
   ViewportRuler
-} from "./chunk-JVW6DT4W.js";
+} from "./chunk-VMUZU7OH.js";
 import {
   _DisposeViewRepeaterStrategy
 } from "./chunk-U3HRNZTG.js";
@@ -16,15 +16,15 @@ import {
 } from "./chunk-EMZ5E5WN.js";
 import "./chunk-GUGIMSVJ.js";
 import {
+  BidiModule,
+  Directionality
+} from "./chunk-YYUC6QS3.js";
+import {
   _isNumberValue
 } from "./chunk-IZCVRZB2.js";
 import {
   Platform
 } from "./chunk-XZHTRGLQ.js";
-import {
-  BidiModule,
-  Directionality
-} from "./chunk-YYUC6QS3.js";
 import "./chunk-X6OMYMPU.js";
 import "./chunk-EITXNJPM.js";
 import {

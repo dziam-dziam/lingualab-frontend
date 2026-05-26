@@ -55,3 +55,9 @@ select {
 .full-width {
   width: 100%;
 }
+
+.snackbar-error {
+  --mdc-snackbar-container-color: #b42318;
+  --mdc-snackbar-supporting-text-color: #ffffff;
+  --mat-snack-bar-button-color: #ffffff;
+}

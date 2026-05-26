@@ -5,13 +5,13 @@ import {
   DomSanitizer
 } from "./chunk-LYH3KWI3.js";
 import "./chunk-47MHGSLJ.js";
+import {
+  HttpClient
+} from "./chunk-VZFU32IF.js";
 import "./chunk-NDDL2MTZ.js";
 import {
   BidiModule
 } from "./chunk-YYUC6QS3.js";
-import {
-  HttpClient
-} from "./chunk-VZFU32IF.js";
 import "./chunk-X6OMYMPU.js";
 import "./chunk-EITXNJPM.js";
 import {

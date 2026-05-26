@@ -7,7 +7,9 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 import { ImageService } from '../../../core/api/image.service';
 import { SurveyService } from '../../../core/api/survey.service';
@@ -33,7 +35,9 @@ interface BuilderBlock {
     MatFormFieldModule,
     MatIconModule,
     MatInputModule,
+    MatProgressSpinnerModule,
     MatSelectModule,
+    MatSnackBarModule,
     NavigationComponent,
   ],
   templateUrl: './builder-page.html',
@@ -44,10 +48,16 @@ export class BuilderPage {
   private readonly surveyService = inject(SurveyService);
   private readonly imageService = inject(ImageService);
   private readonly dialog = inject(MatDialog);
+  private readonly snackBar = inject(MatSnackBar);
 
   readonly survey = signal<Survey | null>(null);
   readonly questions = signal<Question[]>([]);
   readonly images = signal<ImageAsset[]>([]);
+  readonly loadingSurvey = signal(false);
+  readonly savingQuestion = signal(false);
+  readonly addingQuestion = signal(false);
+  readonly deletingQuestionId = signal<string | null>(null);
+  readonly publishing = signal(false);
   readonly error = signal('');
   readonly copied = signal(false);
 
@@ -70,19 +80,24 @@ export class BuilderPage {
   }
 
   loadSurvey(): void {
+    this.loadingSurvey.set(true);
     this.surveyService.getById(this.surveyId).subscribe({
       next: (survey) => {
         this.survey.set(survey);
         this.questions.set([...survey.questions]);
+        this.loadingSurvey.set(false);
       },
-      error: () => this.error.set('Could not load study.'),
+      error: () => {
+        this.loadingSurvey.set(false);
+        this.showError('Could not load study.');
+      },
     });
   }
 
   loadImages(): void {
     this.imageService.getAll().subscribe({
       next: (images) => this.images.set(images),
-      error: () => this.error.set('Could not load image library.'),
+      error: () => this.showError('Could not load image library.'),
     });
   }
 
@@ -93,13 +108,12 @@ export class BuilderPage {
       this.questions.set(reordered.map((question, index) => ({ ...question, displayOrder: index })));
       this.surveyService.reorderQuestions(this.surveyId, this.questions()).subscribe({
         next: (questions) => this.questions.set(questions),
-        error: () => this.error.set('Could not reorder questions.'),
+        error: () => this.showError('Could not reorder questions.'),
       });
       return;
     }
 
     const block = this.blocks[event.previousIndex];
-
     if (block.type === 'IMAGE') {
       this.openImageQuestionDialog(event.currentIndex);
       return;
@@ -112,6 +126,7 @@ export class BuilderPage {
   deleteQuestion(question: Question): void {
     if (!question?.id) return;
 
+    this.deletingQuestionId.set(question.id);
     this.surveyService.deleteQuestion(question.id).subscribe({
       next: () => {
         const updated = this.questions()
@@ -119,19 +134,25 @@ export class BuilderPage {
           .map((item, index) => ({ ...item, displayOrder: index }));
 
         this.questions.set(updated);
+        this.deletingQuestionId.set(null);
 
         if (this.selectedQuestion?.id === question.id) {
           this.selectedQuestion = null;
         }
 
+        this.showSuccess('Question deleted.');
+
         if (updated.length > 0) {
           this.surveyService.reorderQuestions(this.surveyId, updated).subscribe({
             next: (questions) => this.questions.set(questions),
-            error: () => this.error.set('Question deleted, but order could not be saved.'),
+            error: () => this.showError('Question deleted, but order could not be saved.'),
           });
         }
       },
-      error: () => this.error.set('Could not delete question.'),
+      error: () => {
+        this.deletingQuestionId.set(null);
+        this.showError('Could not delete question. Check if you are logged in as this survey owner.');
+      },
     });
   }
 
@@ -141,13 +162,18 @@ export class BuilderPage {
 
   saveQuestion(): void {
     if (!this.selectedQuestion) return;
-
+    this.savingQuestion.set(true);
     this.surveyService.updateQuestion(this.selectedQuestion).subscribe({
       next: (updated) => {
         this.questions.set(this.questions().map((question) => (question.id === updated.id ? updated : question)));
         this.selectedQuestion = updated;
+        this.savingQuestion.set(false);
+        this.showSuccess('Question saved.');
       },
-      error: () => this.error.set('Could not save question.'),
+      error: () => {
+        this.savingQuestion.set(false);
+        this.showError('Could not save question.');
+      },
     });
   }
 
@@ -171,19 +197,55 @@ export class BuilderPage {
   }
 
   publish(): void {
+    this.publishing.set(true);
     this.surveyService.publish(this.surveyId).subscribe({
-      next: (survey) => this.survey.set(survey),
-      error: () => this.error.set('Add at least one valid question before publishing.'),
+      next: (survey) => {
+        this.survey.set(survey);
+        this.publishing.set(false);
+        this.showSuccess('Survey published.');
+      },
+      error: () => {
+        this.publishing.set(false);
+        this.showError('Add at least one valid question before publishing.');
+      },
     });
   }
 
   copyPublicUrl(): void {
     const url = this.survey()?.publicUrl;
     if (!url) return;
-
     navigator.clipboard.writeText(url);
     this.copied.set(true);
     window.setTimeout(() => this.copied.set(false), 1600);
+  }
+
+  private createQuestion(type: QuestionType, displayOrder: number): Question {
+    const base = {
+      type,
+      title: this.defaultTitle(type),
+      description: '',
+      displayOrder,
+      options: [],
+    };
+    if (type === 'TEXT') return { ...base, placeholder: 'Type your answer' };
+    if (type === 'MULTIPLE_CHOICE') {
+      return {
+        ...base,
+        options: [
+          { label: 'Option 1', value: 'option-1', displayOrder: 0 },
+          { label: 'Option 2', value: 'option-2', displayOrder: 1 },
+        ],
+      };
+    }
+    if (type === 'REACTION_TIME') return { ...base, stimulus: 'BLUE', allowedKeys: 'f,j', delayMs: 800 };
+    return base;
+  }
+
+  private defaultTitle(type: QuestionType): string {
+    if (type === 'TEXT') return 'Open response';
+    if (type === 'MULTIPLE_CHOICE') return 'Choose one option';
+    if (type === 'IMAGE') return 'Describe the image';
+    return 'Reaction time trial';
   }
 
   private openImageQuestionDialog(displayOrder: number): void {
@@ -197,56 +259,36 @@ export class BuilderPage {
 
     dialogRef.afterClosed().subscribe((result?: { question: Question; images: ImageAsset[] } | null) => {
       if (!result) return;
-
       this.images.set(result.images);
       this.addQuestion(result.question, displayOrder);
     });
   }
 
   private addQuestion(question: Question, index: number): void {
+    this.addingQuestion.set(true);
     this.surveyService.addQuestion(this.surveyId, question).subscribe({
       next: (created) => {
         const updated = [...this.questions()];
         updated.splice(index, 0, created);
         this.questions.set(updated.map((item, questionIndex) => ({ ...item, displayOrder: questionIndex })));
         this.selectedQuestion = created;
+        this.addingQuestion.set(false);
+        this.showSuccess('Question added.');
       },
-      error: () => this.error.set('Could not add question.'),
+      error: () => {
+        this.addingQuestion.set(false);
+        this.showError('Could not add question.');
+      },
     });
   }
 
-  private createQuestion(type: QuestionType, displayOrder: number): Question {
-    const base = {
-      type,
-      title: this.defaultTitle(type),
-      description: '',
-      displayOrder,
-      options: [],
-    };
-
-    if (type === 'TEXT') return { ...base, placeholder: 'Type your answer' };
-
-    if (type === 'MULTIPLE_CHOICE') {
-      return {
-        ...base,
-        options: [
-          { label: 'Option 1', value: 'option-1', displayOrder: 0 },
-          { label: 'Option 2', value: 'option-2', displayOrder: 1 },
-        ],
-      };
-    }
-
-    if (type === 'REACTION_TIME') {
-      return { ...base, stimulus: 'BLUE', allowedKeys: 'f,j', delayMs: 800 };
-    }
-
-    return base;
+  private showSuccess(message: string): void {
+    this.error.set('');
+    this.snackBar.open(message, 'OK', { duration: 2600 });
   }
 
-  private defaultTitle(type: QuestionType): string {
-    if (type === 'TEXT') return 'Open response';
-    if (type === 'MULTIPLE_CHOICE') return 'Choose one option';
-    if (type === 'IMAGE') return 'Describe the image';
-    return 'Reaction time trial';
+  private showError(message: string): void {
+    this.error.set(message);
+    this.snackBar.open(message, 'OK', { duration: 4200, panelClass: ['snackbar-error'] });
   }
 }

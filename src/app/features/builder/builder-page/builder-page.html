@@ -15,30 +15,41 @@
         {{ copied() ? 'Copied' : 'Public link' }}
       </button>
       }
-
-      <button mat-flat-button type="button" (click)="publish()">
-        <mat-icon>publish</mat-icon>
-        Publish
+      <button
+        mat-flat-button
+        type="button"
+        (click)="publish()"
+        [disabled]="publishing()"
+      >
+        @if (publishing()) {
+        <mat-spinner diameter="18" />
+        } @else {
+        <span class="button-content">
+          <mat-icon>publish</mat-icon>
+          <span>Publish</span>
+        </span>
+        }
       </button>
     </div>
   </header>
 
   <section class="builder-grid">
-    <aside
-      class="panel palette"
-      cdkDropList
-      id="paletteList"
-      [cdkDropListData]="blocks"
-      [cdkDropListConnectedTo]="['canvasList']"
-    >
+    <aside class="panel palette">
       <h2>Blocks</h2>
 
-      @for (block of blocks; track block.type) {
-      <button class="block-button" type="button" cdkDrag>
-        <mat-icon>{{ block.icon }}</mat-icon>
-        {{ block.label }}
-      </button>
-      }
+      <div
+        cdkDropList
+        id="paletteList"
+        [cdkDropListData]="blocks"
+        [cdkDropListConnectedTo]="['canvasList']"
+      >
+        @for (block of blocks; track block.type) {
+        <button class="block-button" type="button" cdkDrag>
+          <mat-icon>{{ block.icon }}</mat-icon>
+          {{ block.label }}
+        </button>
+        }
+      </div>
     </aside>
 
     <section
@@ -54,13 +65,21 @@
         <span>{{ questions().length }} blocks</span>
       </div>
 
-      @if (questions().length === 0) {
+      @if (loadingSurvey()) {
+      <div class="loading-state">
+        <mat-spinner diameter="32" />
+      </div>
+      } @else if (addingQuestion()) {
+      <div class="loading-state">
+        <mat-spinner diameter="32" />
+        <span>Adding question...</span>
+      </div>
+      } @else if (questions().length === 0) {
       <div class="canvas-empty">Drag question blocks here.</div>
       } @else { @for (question of questions(); track question.id) {
       <article class="question-card" cdkDrag (click)="selectQuestion(question)">
         <mat-icon class="drag-icon">drag_indicator</mat-icon>
-
-        <div class="question-content">
+        <div>
           <span>{{ question.type }}</span>
           <h3>{{ question.title }}</h3>
           <p>
@@ -68,25 +87,26 @@
             }}
           </p>
         </div>
-
-        <div class="question-actions">
-          <button
-            mat-icon-button
-            type="button"
-            aria-label="Delete question"
-            class="delete-question-button"
-            (click)="$event.stopPropagation(); deleteQuestion(question)"
-          >
-            <mat-icon>delete</mat-icon>
-          </button>
-        </div>
+        <button
+          mat-icon-button
+          type="button"
+          class="delete-question-button"
+          aria-label="Delete question"
+          [disabled]="deletingQuestionId() === question.id"
+          (click)="$event.stopPropagation(); deleteQuestion(question)"
+        >
+          @if (deletingQuestionId() === question.id) {
+          <mat-spinner diameter="18" />
+          } @else {
+          <mat-icon>delete</mat-icon>
+          }
+        </button>
       </article>
       } }
     </section>
 
     <aside class="panel editor">
       <h2>Editor</h2>
-
       @if (selectedQuestion; as selected) {
       <mat-form-field appearance="outline" class="full-width">
         <mat-label>Title</mat-label>
@@ -113,7 +133,6 @@
         $index) {
         <div class="option-row">
           <input [(ngModel)]="option.label" aria-label="Option label" />
-
           <button
             mat-icon-button
             type="button"
@@ -124,7 +143,6 @@
           </button>
         </div>
         }
-
         <button mat-stroked-button type="button" (click)="addOption(selected)">
           <mat-icon>add</mat-icon>
           Option
@@ -133,7 +151,6 @@
       } @if (selected.type === 'IMAGE') {
       <mat-form-field appearance="outline" class="full-width">
         <mat-label>Image</mat-label>
-
         <mat-select
           [ngModel]="selected.imageKey"
           (ngModelChange)="onImageSelected(selected, $event)"
@@ -150,29 +167,39 @@
         <mat-label>Stimulus</mat-label>
         <input matInput [(ngModel)]="selected.stimulus" />
       </mat-form-field>
-
       <mat-form-field appearance="outline" class="full-width">
         <mat-label>Keys</mat-label>
         <input matInput [(ngModel)]="selected.allowedKeys" />
       </mat-form-field>
-
       <mat-form-field appearance="outline" class="full-width">
         <mat-label>Delay ms</mat-label>
         <input matInput type="number" [(ngModel)]="selected.delayMs" />
       </mat-form-field>
       }
 
-      <button mat-flat-button type="button" (click)="saveQuestion()">
-        Save question
-      </button>
-      <button
-        mat-stroked-button
-        color="warn"
-        type="button"
-        (click)="deleteQuestion(selected)"
-      >
-        Delete question
-      </button>
+      <div class="editor-actions">
+        <button
+          mat-flat-button
+          type="button"
+          (click)="saveQuestion()"
+          [disabled]="savingQuestion()"
+        >
+          @if (savingQuestion()) {
+          <mat-spinner diameter="18" />
+          } @else { Save question }
+        </button>
+
+        <button
+          mat-stroked-button
+          type="button"
+          class="danger-action"
+          (click)="deleteQuestion(selected)"
+          [disabled]="deletingQuestionId() === selected.id"
+        >
+          <mat-icon>delete</mat-icon>
+          Delete
+        </button>
+      </div>
       } @else {
       <p>Select a question to edit it.</p>
       }

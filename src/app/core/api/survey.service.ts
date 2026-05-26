@@ -34,6 +34,10 @@ export class SurveyService {
     return this.http.post<Survey>(`${this.apiBaseUrl}/surveys/${surveyId}/publish`, {});
   }
 
+  deleteSurvey(surveyId: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiBaseUrl}/surveys/${surveyId}`);
+  }
+
   addQuestion(surveyId: string, question: Question): Observable<Question> {
     return this.http.post<Question>(`${this.apiBaseUrl}/questions/survey/${surveyId}`, question);
   }

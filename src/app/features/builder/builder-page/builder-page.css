@@ -32,6 +32,12 @@
   gap: 10px;
 }
 
+.button-content {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
 .builder-grid {
   display: grid;
   grid-template-columns: 230px minmax(0, 1fr) 340px;
@@ -89,6 +95,7 @@
   display: grid;
   grid-template-columns: auto 1fr auto;
   gap: 12px;
+  align-items: center;
   margin-bottom: 10px;
   padding: 14px;
   border: 1px solid #dbe3ef;
@@ -116,19 +123,6 @@
   color: #8493a8;
 }
 
-.question-actions {
-  display: flex;
-  align-items: start;
-}
-
-.delete-question-button {
-  color: #b42318;
-}
-
-.delete-question-button mat-icon {
-  font-size: 20px;
-}
-
 .editor {
   display: grid;
   gap: 12px;
@@ -150,6 +144,24 @@
   border: 1px solid #ccd6e4;
   border-radius: 8px;
   padding: 10px;
+}
+
+.delete-question-button,
+.danger-action {
+  color: #b42318;
+}
+
+.editor-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.loading-state {
+  display: grid;
+  min-height: 180px;
+  place-items: center;
+  gap: 10px;
+  color: #607089;
 }
 
 .error {

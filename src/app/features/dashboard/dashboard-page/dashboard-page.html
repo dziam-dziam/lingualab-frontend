@@ -4,7 +4,9 @@
   <section class="dashboard-header">
     <div>
       <h1 class="section-title">Research dashboard</h1>
-      <p class="section-copy">Create, publish, and review linguistic experiments.</p>
+      <p class="section-copy">
+        Create, publish, and review linguistic experiments.
+      </p>
     </div>
   </section>
 
@@ -17,45 +19,80 @@
       </mat-form-field>
       <mat-form-field appearance="outline" class="full-width">
         <mat-label>Description</mat-label>
-        <textarea matInput rows="4" name="description" [(ngModel)]="newSurvey.description"></textarea>
+        <textarea
+          matInput
+          rows="4"
+          name="description"
+          [(ngModel)]="newSurvey.description"
+        ></textarea>
       </mat-form-field>
-      <button mat-flat-button type="submit">
-        <mat-icon>add</mat-icon>
-        Create
+      <button mat-flat-button type="submit" [disabled]="creating()">
+        @if (creating()) {
+        <mat-spinner diameter="18" />
+        } @else {
+        <span class="button-content">
+          <mat-icon>add</mat-icon>
+          <span>Create</span>
+        </span>
+        }
       </button>
     </form>
 
     <section class="survey-list">
       @if (loading()) {
-        <p>Loading studies...</p>
+      <div class="loading-state">
+        <mat-spinner diameter="32" />
+      </div>
       } @else if (surveys().length === 0) {
-        <article class="panel empty-state">No studies yet.</article>
-      } @else {
-        @for (survey of surveys(); track survey.id) {
-          <article class="panel survey-row">
-            <div>
-              <span class="status">{{ survey.status }}</span>
-              <h2>{{ survey.title }}</h2>
-              <p>{{ survey.description }}</p>
-              @if (survey.status === 'PUBLISHED') {
-                <a [href]="survey.publicUrl" target="_blank" rel="noopener">{{ survey.publicUrl }}</a>
-              }
-            </div>
-            <div class="row-actions">
-              <a mat-icon-button [routerLink]="['/builder', survey.id]" aria-label="Open builder">
-                <mat-icon>edit</mat-icon>
-              </a>
-              <a mat-icon-button [routerLink]="['/results', survey.id]" aria-label="View results">
-                <mat-icon>bar_chart</mat-icon>
-              </a>
-            </div>
-          </article>
-        }
-      }
+      <article class="panel empty-state">No studies yet.</article>
+      } @else { @for (survey of surveys(); track survey.id) {
+      <article class="panel survey-row">
+        <div>
+          <span class="status">{{ survey.status }}</span>
+          <h2>{{ survey.title }}</h2>
+          <p>{{ survey.description }}</p>
+          @if (survey.status === 'PUBLISHED') {
+          <a [href]="survey.publicUrl" target="_blank" rel="noopener"
+            >{{ survey.publicUrl }}</a
+          >
+          }
+        </div>
+        <div class="row-actions">
+          <a
+            mat-icon-button
+            [routerLink]="['/builder', survey.id]"
+            aria-label="Open builder"
+          >
+            <mat-icon>edit</mat-icon>
+          </a>
+          <a
+            mat-icon-button
+            [routerLink]="['/results', survey.id]"
+            aria-label="View results"
+          >
+            <mat-icon>bar_chart</mat-icon>
+          </a>
+          <button
+            mat-icon-button
+            type="button"
+            class="delete-survey-button"
+            aria-label="Delete survey"
+            [disabled]="deletingSurveyId() === survey.id"
+            (click)="deleteSurvey(survey)"
+          >
+            @if (deletingSurveyId() === survey.id) {
+            <mat-spinner diameter="18" />
+            } @else {
+            <mat-icon>delete</mat-icon>
+            }
+          </button>
+        </div>
+      </article>
+      } }
     </section>
   </section>
 
   @if (error()) {
-    <p class="error">{{ error() }}</p>
+  <p class="error">{{ error() }}</p>
   }
 </main>
