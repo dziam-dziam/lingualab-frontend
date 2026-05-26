@@ -1,0 +1,38 @@
+.dialog-content {
+    display: grid;
+    width: min(560px, 76vw);
+    gap: 14px;
+  }
+  
+  .upload-row {
+    display: flex;
+  }
+  
+  .upload-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    border: 1px solid #c8d4e3;
+    border-radius: 8px;
+    background: #f8fafc;
+    color: #172033;
+    cursor: pointer;
+  }
+  
+  .upload-button input {
+    display: none;
+  }
+  
+  .preview-image {
+    width: 100%;
+    max-height: 260px;
+    border-radius: 8px;
+    object-fit: contain;
+    background: #edf2f8;
+  }
+  
+  .dialog-error {
+    margin: 0;
+    color: #b42318;
+  }

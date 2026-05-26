@@ -1,0 +1,41 @@
+.question {
+  display: grid;
+  gap: 18px;
+}
+
+.question-copy h2 {
+  margin: 0 0 6px;
+  font-size: 22px;
+}
+
+.question-copy p {
+  margin: 0;
+  color: #607089;
+}
+
+.option-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.question-image {
+  width: min(100%, 620px);
+  max-height: 360px;
+  border-radius: 8px;
+  object-fit: contain;
+  background: #edf2f8;
+}
+
+.reaction-box {
+  display: grid;
+  min-height: 180px;
+  place-items: center;
+  border: 1px dashed #a9b8cc;
+  border-radius: 8px;
+  background: #f8fafc;
+}
+
+.reaction-box strong {
+  font-size: 42px;
+}

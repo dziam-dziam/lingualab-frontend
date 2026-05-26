@@ -1,0 +1,28 @@
+<app-navigation-component />
+
+<main class="auth-shell">
+  <section class="panel auth-panel">
+    <h1>Log in</h1>
+    <p>Open your research workspace.</p>
+
+    <form class="form-grid" (ngSubmit)="login()">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Email</mat-label>
+        <input matInput type="email" name="email" [(ngModel)]="loginData.email" autocomplete="username" required />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Password</mat-label>
+        <input matInput type="password" name="password" [(ngModel)]="loginData.password" autocomplete="current-password" required />
+      </mat-form-field>
+
+      @if (error()) {
+        <p class="error">{{ error() }}</p>
+      }
+
+      <button mat-flat-button type="submit" [disabled]="loading()">Log in</button>
+    </form>
+
+    <a routerLink="/register">Create researcher account</a>
+  </section>
+</main>

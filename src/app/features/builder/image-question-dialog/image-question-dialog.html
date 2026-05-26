@@ -1,0 +1,57 @@
+<h2 mat-dialog-title>Image question</h2>
+
+<mat-dialog-content class="dialog-content">
+  <div class="upload-row">
+    <label class="upload-button">
+      <mat-icon>upload</mat-icon>
+      <span>{{ uploading() ? 'Uploading...' : 'Upload image' }}</span>
+      <input
+        type="file"
+        accept="image/*"
+        (change)="uploadImage($event)"
+        [disabled]="uploading()"
+      />
+    </label>
+  </div>
+
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>Image</mat-label>
+
+    <mat-select [(ngModel)]="form.imageKey">
+      @for (image of images(); track image.id) {
+      <mat-option [value]="image.imageKey"
+        >{{ image.originalFileName || image.imageKey }}</mat-option
+      >
+      }
+    </mat-select>
+  </mat-form-field>
+
+  @if (selectedImage) {
+  <img
+    class="preview-image"
+    [src]="selectedImage.imageUrl"
+    [alt]="selectedImage.originalFileName || selectedImage.imageKey"
+  />
+  }
+
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>Title</mat-label>
+    <input matInput [(ngModel)]="form.title" />
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>Description</mat-label>
+    <textarea matInput rows="3" [(ngModel)]="form.description"></textarea>
+  </mat-form-field>
+
+  @if (error()) {
+  <p class="dialog-error">{{ error() }}</p>
+  }
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button type="button" (click)="cancel()">Cancel</button>
+  <button mat-flat-button type="button" (click)="addQuestion()">
+    Add question
+  </button>
+</mat-dialog-actions>

@@ -1,0 +1,165 @@
+<app-navigation-component />
+
+<main class="builder-shell">
+  <header class="builder-top">
+    <div>
+      <a routerLink="/dashboard" class="back-link">Dashboard</a>
+      <h1>{{ survey()?.title }}</h1>
+      <p>{{ survey()?.description }}</p>
+    </div>
+
+    <div class="top-actions">
+      @if (survey()?.status === 'PUBLISHED') {
+      <button mat-stroked-button type="button" (click)="copyPublicUrl()">
+        <mat-icon>link</mat-icon>
+        {{ copied() ? 'Copied' : 'Public link' }}
+      </button>
+      }
+
+      <button mat-flat-button type="button" (click)="publish()">
+        <mat-icon>publish</mat-icon>
+        Publish
+      </button>
+    </div>
+  </header>
+
+  <section class="builder-grid">
+    <aside
+      class="panel palette"
+      cdkDropList
+      id="paletteList"
+      [cdkDropListData]="blocks"
+      [cdkDropListConnectedTo]="['canvasList']"
+    >
+      <h2>Blocks</h2>
+
+      @for (block of blocks; track block.type) {
+      <button class="block-button" type="button" cdkDrag>
+        <mat-icon>{{ block.icon }}</mat-icon>
+        {{ block.label }}
+      </button>
+      }
+    </aside>
+
+    <section
+      class="panel canvas"
+      cdkDropList
+      id="canvasList"
+      [cdkDropListData]="questions()"
+      [cdkDropListConnectedTo]="['paletteList']"
+      (cdkDropListDropped)="drop($event)"
+    >
+      <div class="canvas-header">
+        <h2>Canvas</h2>
+        <span>{{ questions().length }} blocks</span>
+      </div>
+
+      @if (questions().length === 0) {
+      <div class="canvas-empty">Drag question blocks here.</div>
+      } @else { @for (question of questions(); track question.id) {
+      <article class="question-card" cdkDrag (click)="selectQuestion(question)">
+        <mat-icon class="drag-icon">drag_indicator</mat-icon>
+
+        <div>
+          <span>{{ question.type }}</span>
+          <h3>{{ question.title }}</h3>
+          <p>
+            {{ question.description || question.placeholder || question.stimulus
+            }}
+          </p>
+        </div>
+      </article>
+      } }
+    </section>
+
+    <aside class="panel editor">
+      <h2>Editor</h2>
+
+      @if (selectedQuestion; as selected) {
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Title</mat-label>
+        <input matInput [(ngModel)]="selected.title" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Description</mat-label>
+        <textarea
+          matInput
+          rows="3"
+          [(ngModel)]="selected.description"
+        ></textarea>
+      </mat-form-field>
+
+      @if (selected.type === 'TEXT') {
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Placeholder</mat-label>
+        <input matInput [(ngModel)]="selected.placeholder" />
+      </mat-form-field>
+      } @if (selected.type === 'MULTIPLE_CHOICE') {
+      <div class="option-editor">
+        @for (option of selected.options; track option.displayOrder; let index =
+        $index) {
+        <div class="option-row">
+          <input [(ngModel)]="option.label" aria-label="Option label" />
+
+          <button
+            mat-icon-button
+            type="button"
+            aria-label="Remove option"
+            (click)="removeOption(selected, index)"
+          >
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
+        }
+
+        <button mat-stroked-button type="button" (click)="addOption(selected)">
+          <mat-icon>add</mat-icon>
+          Option
+        </button>
+      </div>
+      } @if (selected.type === 'IMAGE') {
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Image</mat-label>
+
+        <mat-select
+          [ngModel]="selected.imageKey"
+          (ngModelChange)="onImageSelected(selected, $event)"
+        >
+          @for (image of images(); track image.id) {
+          <mat-option [value]="image.imageKey"
+            >{{ image.originalFileName || image.imageKey }}</mat-option
+          >
+          }
+        </mat-select>
+      </mat-form-field>
+      } @if (selected.type === 'REACTION_TIME') {
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Stimulus</mat-label>
+        <input matInput [(ngModel)]="selected.stimulus" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Keys</mat-label>
+        <input matInput [(ngModel)]="selected.allowedKeys" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Delay ms</mat-label>
+        <input matInput type="number" [(ngModel)]="selected.delayMs" />
+      </mat-form-field>
+      }
+
+      <button mat-flat-button type="button" (click)="saveQuestion()">
+        Save question
+      </button>
+      } @else {
+      <p>Select a question to edit it.</p>
+      }
+    </aside>
+  </section>
+
+  @if (error()) {
+  <p class="error">{{ error() }}</p>
+  }
+</main>

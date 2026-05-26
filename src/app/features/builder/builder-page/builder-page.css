@@ -1,0 +1,154 @@
+.builder-shell {
+  width: min(1360px, calc(100% - 28px));
+  margin: 0 auto;
+  padding: 24px 0 40px;
+}
+
+.builder-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 18px;
+}
+
+.builder-top h1 {
+  margin: 4px 0;
+  font-size: 30px;
+}
+
+.builder-top p {
+  margin: 0;
+  color: #607089;
+}
+
+.back-link {
+  color: #2864a6;
+  font-weight: 700;
+}
+
+.top-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.builder-grid {
+  display: grid;
+  grid-template-columns: 230px minmax(0, 1fr) 340px;
+  gap: 16px;
+  align-items: start;
+}
+
+.palette,
+.canvas,
+.editor {
+  padding: 16px;
+}
+
+.palette h2,
+.canvas h2,
+.editor h2 {
+  margin: 0 0 14px;
+  font-size: 18px;
+}
+
+.block-button {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  padding: 10px;
+  border: 1px solid #dbe3ef;
+  border-radius: 8px;
+  background: #f8fafc;
+  color: #172033;
+  cursor: grab;
+}
+
+.canvas {
+  min-height: 620px;
+}
+
+.canvas-header {
+  display: flex;
+  justify-content: space-between;
+  color: #607089;
+}
+
+.canvas-empty {
+  display: grid;
+  min-height: 420px;
+  place-items: center;
+  border: 1px dashed #a9b8cc;
+  border-radius: 8px;
+  color: #607089;
+}
+
+.question-card {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 12px;
+  margin-bottom: 10px;
+  padding: 14px;
+  border: 1px solid #dbe3ef;
+  border-radius: 8px;
+  background: #ffffff;
+  cursor: pointer;
+}
+
+.question-card span {
+  color: #2864a6;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.question-card h3 {
+  margin: 4px 0;
+}
+
+.question-card p {
+  margin: 0;
+  color: #607089;
+}
+
+.drag-icon {
+  color: #8493a8;
+}
+
+.editor {
+  display: grid;
+  gap: 12px;
+}
+
+.option-editor {
+  display: grid;
+  gap: 10px;
+}
+
+.option-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px;
+}
+
+.option-row input {
+  min-width: 0;
+  border: 1px solid #ccd6e4;
+  border-radius: 8px;
+  padding: 10px;
+}
+
+.error {
+  color: #b42318;
+}
+
+.cdk-drag-preview {
+  box-shadow: 0 12px 24px rgba(23, 32, 51, 0.18);
+}
+
+@media (max-width: 1100px) {
+  .builder-grid {
+    grid-template-columns: 1fr;
+  }
+}

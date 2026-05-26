@@ -1,0 +1,18 @@
+<mat-toolbar class="topbar">
+  <a class="brand" routerLink="/dashboard">
+    <mat-icon>science</mat-icon>
+    <span>LinguaLab</span>
+  </a>
+
+  <span class="spacer"></span>
+
+  @if (authToken.isLoggedIn()) {
+    <a mat-button routerLink="/dashboard">Dashboard</a>
+    <button mat-icon-button type="button" aria-label="Log out" (click)="logout()">
+      <mat-icon>logout</mat-icon>
+    </button>
+  } @else {
+    <a mat-button routerLink="/login">Log in</a>
+    <a mat-flat-button routerLink="/register">Register</a>
+  }
+</mat-toolbar>

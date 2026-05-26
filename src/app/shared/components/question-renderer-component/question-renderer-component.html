@@ -1,0 +1,44 @@
+<section class="question" [ngClass]="question().type.toLowerCase()">
+  <div class="question-copy">
+    <h2>{{ question().title }}</h2>
+    @if (question().description) {
+      <p>{{ question().description }}</p>
+    }
+  </div>
+
+  @switch (question().type) {
+    @case ('TEXT') {
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>{{ question().placeholder || 'Your response' }}</mat-label>
+        <textarea matInput rows="4" [(ngModel)]="textAnswer" (ngModelChange)="emitText()"></textarea>
+      </mat-form-field>
+    }
+    @case ('MULTIPLE_CHOICE') {
+      <mat-button-toggle-group class="option-group" [(ngModel)]="selectedOption" (ngModelChange)="emitOption()">
+        @for (option of question().options; track option.value) {
+          <mat-button-toggle [value]="option.value">{{ option.label }}</mat-button-toggle>
+        }
+      </mat-button-toggle-group>
+    }
+    @case ('IMAGE') {
+      @if (question().imageUrl) {
+        <img class="question-image" [src]="question().imageUrl" [alt]="question().title" />
+      }
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Observation</mat-label>
+        <textarea matInput rows="3" [(ngModel)]="textAnswer" (ngModelChange)="emitText()"></textarea>
+      </mat-form-field>
+    }
+    @case ('REACTION_TIME') {
+      <div class="reaction-box">
+        @if (waiting()) {
+          <mat-spinner diameter="32" />
+        } @else if (stimulusVisible()) {
+          <strong>{{ question().stimulus }}</strong>
+        } @else {
+          <button mat-flat-button type="button" (click)="startReactionTrial()">Start trial</button>
+        }
+      </div>
+    }
+  }
+</section>

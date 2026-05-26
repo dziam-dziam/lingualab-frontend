@@ -1,0 +1,35 @@
+<main class="participant-shell">
+  @if (complete()) {
+    <section class="panel complete-panel">
+      <mat-icon>check_circle</mat-icon>
+      <h1>Response submitted</h1>
+      <p>Thank you for participating.</p>
+    </section>
+  } @else if (survey(); as study) {
+    <header class="participant-header">
+      <div>
+        <h1>{{ study.title }}</h1>
+        <p>{{ study.description }}</p>
+      </div>
+      <span>{{ currentIndex() + 1 }} / {{ study.questions.length }}</span>
+    </header>
+
+    <section class="panel question-panel">
+      <app-question-renderer-component
+        [question]="study.questions[currentIndex()]"
+        (answerChanged)="updateAnswer($event)"
+      />
+    </section>
+
+    <nav class="participant-actions">
+      <button mat-stroked-button type="button" (click)="previous()" [disabled]="currentIndex() === 0">Back</button>
+      <button mat-flat-button type="button" (click)="next()">
+        {{ currentIndex() === study.questions.length - 1 ? 'Submit' : 'Next' }}
+      </button>
+    </nav>
+  }
+
+  @if (error()) {
+    <p class="error">{{ error() }}</p>
+  }
+</main>

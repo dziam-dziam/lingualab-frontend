@@ -1,0 +1,61 @@
+<app-navigation-component />
+
+<main class="page-shell">
+  <section class="dashboard-header">
+    <div>
+      <h1 class="section-title">Research dashboard</h1>
+      <p class="section-copy">Create, publish, and review linguistic experiments.</p>
+    </div>
+  </section>
+
+  <section class="dashboard-grid">
+    <form class="panel create-panel" (ngSubmit)="createSurvey()">
+      <h2>New study</h2>
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Title</mat-label>
+        <input matInput name="title" [(ngModel)]="newSurvey.title" required />
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Description</mat-label>
+        <textarea matInput rows="4" name="description" [(ngModel)]="newSurvey.description"></textarea>
+      </mat-form-field>
+      <button mat-flat-button type="submit">
+        <mat-icon>add</mat-icon>
+        Create
+      </button>
+    </form>
+
+    <section class="survey-list">
+      @if (loading()) {
+        <p>Loading studies...</p>
+      } @else if (surveys().length === 0) {
+        <article class="panel empty-state">No studies yet.</article>
+      } @else {
+        @for (survey of surveys(); track survey.id) {
+          <article class="panel survey-row">
+            <div>
+              <span class="status">{{ survey.status }}</span>
+              <h2>{{ survey.title }}</h2>
+              <p>{{ survey.description }}</p>
+              @if (survey.status === 'PUBLISHED') {
+                <a [href]="survey.publicUrl" target="_blank" rel="noopener">{{ survey.publicUrl }}</a>
+              }
+            </div>
+            <div class="row-actions">
+              <a mat-icon-button [routerLink]="['/builder', survey.id]" aria-label="Open builder">
+                <mat-icon>edit</mat-icon>
+              </a>
+              <a mat-icon-button [routerLink]="['/results', survey.id]" aria-label="View results">
+                <mat-icon>bar_chart</mat-icon>
+              </a>
+            </div>
+          </article>
+        }
+      }
+    </section>
+  </section>
+
+  @if (error()) {
+    <p class="error">{{ error() }}</p>
+  }
+</main>
