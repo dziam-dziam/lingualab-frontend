@@ -85,7 +85,7 @@ export class BuilderPage {
     this.surveyService.getById(this.surveyId).subscribe({
       next: (survey) => {
         this.survey.set(survey);
-        this.questions.set([...survey.questions]);
+        this.questions.set(survey.questions.map((question) => this.normalizeReactionQuestion(question)));
         this.loadingSurvey.set(false);
       },
       error: () => {
@@ -158,7 +158,7 @@ export class BuilderPage {
   }
 
   selectQuestion(question: Question): void {
-    this.selectedQuestion = { ...question, options: [...question.options] };
+    this.selectedQuestion = this.normalizeReactionQuestion({ ...question, options: [...question.options] });
   }
 
   saveQuestion(): void {
@@ -232,10 +232,6 @@ export class BuilderPage {
       question.videoUrl = undefined;
     }
 
-    if (reactionStimulusType === 'WORD') {
-      question.stimulus ||= 'BLUE';
-    }
-
     if (reactionStimulusType === 'TEXT') {
       question.stimulus ||= 'Read this text and choose an option.';
     }
@@ -289,9 +285,8 @@ export class BuilderPage {
     if (type === 'REACTION_TIME') {
       return {
         ...base,
-        reactionStimulusType: 'WORD',
-        stimulus: 'BLUE',
-        allowedKeys: 'f,j',
+        reactionStimulusType: 'TEXT',
+        stimulus: 'Read this text and choose an option.',
         delayMs: 800,
         options: [
           { label: 'Option 1', value: 'option-1', displayOrder: 0 },
@@ -300,6 +295,15 @@ export class BuilderPage {
       };
     }
     return base;
+  }
+
+  private normalizeReactionQuestion(question: Question): Question {
+    if (question.type !== 'REACTION_TIME') return question;
+    const reactionStimulusType = question.reactionStimulusType as string | undefined;
+    return {
+      ...question,
+      reactionStimulusType: reactionStimulusType === 'WORD' ? 'TEXT' : question.reactionStimulusType || 'TEXT',
+    };
   }
 
   private defaultTitle(type: QuestionType): string {

@@ -1,5 +1,5 @@
 import { NgClass } from '@angular/common';
-import { Component, effect, HostListener, input, OnDestroy, output, signal } from '@angular/core';
+import { Component, effect, input, OnDestroy, output, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -95,20 +95,5 @@ export class QuestionRendererComponent {
       reactionTimeMs: Math.round(performance.now() - this.stimulusStart),
     });
     this.reactionOptionsVisible.set(false);
-  }
-
-  @HostListener('window:keydown', ['$event'])
-  onKeydown(event: KeyboardEvent): void {
-    if (this.question().type !== 'REACTION_TIME' || !this.stimulusVisible() || this.question().options.length > 0) return;
-    const allowedKeys = (this.question().allowedKeys ?? 'f,j')
-      .split(',')
-      .map((key) => key.trim().toLowerCase());
-    if (!allowedKeys.includes(event.key.toLowerCase())) return;
-    this.answerChanged.emit({
-      questionId: this.question().id ?? '',
-      pressedKey: event.key,
-      reactionTimeMs: Math.round(performance.now() - this.stimulusStart),
-    });
-    this.stimulusVisible.set(false);
   }
 }

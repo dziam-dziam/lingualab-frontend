@@ -47,7 +47,7 @@
   } @case ('REACTION_TIME') {
   <div class="reaction-box">
     <div class="reaction-target">
-      @switch (question().reactionStimulusType || 'WORD') { @case ('IMAGE') {
+      @switch (question().reactionStimulusType || 'TEXT') { @case ('IMAGE') {
       @if (question().imageUrl) {
       <img
         class="question-image"
@@ -65,7 +65,7 @@
       } @case ('TEXT') {
       <p>{{ question().stimulus }}</p>
       } @default {
-      <strong>{{ question().stimulus }}</strong>
+      <p>{{ question().stimulus }}</p>
       } }
     </div>
 
