@@ -86,6 +86,13 @@
             {{ question.description || question.placeholder || question.stimulus
             }}
           </p>
+          @if (question.type === 'IMAGE' && question.imageUrl) {
+          <img
+            class="card-image-preview"
+            [src]="question.imageUrl"
+            [alt]="question.title"
+          />
+          }
         </div>
         <button
           mat-icon-button
@@ -162,18 +169,115 @@
           }
         </mat-select>
       </mat-form-field>
-      } @if (selected.type === 'REACTION_TIME') {
+
+      @if (selected.imageUrl) {
+      <img
+        class="editor-image-preview"
+        [src]="selected.imageUrl"
+        [alt]="selected.title"
+      />
+      } } @if (selected.type === 'REACTION_TIME') {
       <mat-form-field appearance="outline" class="full-width">
-        <mat-label>Stimulus</mat-label>
+        <mat-label>Reaction target</mat-label>
+        <mat-select
+          [ngModel]="selected.reactionStimulusType || 'WORD'"
+          (ngModelChange)="onReactionStimulusTypeSelected(selected, $event)"
+        >
+          <mat-option value="WORD">Word</mat-option>
+          <mat-option value="TEXT">Text</mat-option>
+          <mat-option value="IMAGE">Image</mat-option>
+          <mat-option value="VIDEO">Video</mat-option>
+          <mat-option value="MULTIPLE_CHOICE">Choice prompt</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      @if ((selected.reactionStimulusType || 'WORD') === 'WORD') {
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Word</mat-label>
         <input matInput [(ngModel)]="selected.stimulus" />
       </mat-form-field>
+      } @if (selected.reactionStimulusType === 'TEXT') {
       <mat-form-field appearance="outline" class="full-width">
-        <mat-label>Keys</mat-label>
-        <input matInput [(ngModel)]="selected.allowedKeys" />
+        <mat-label>Text</mat-label>
+        <textarea matInput rows="4" [(ngModel)]="selected.stimulus"></textarea>
       </mat-form-field>
+      } @if (selected.reactionStimulusType === 'IMAGE') {
+      <div class="reaction-upload-row">
+        <label class="reaction-upload-button">
+          @if (uploadingReactionImage()) {
+          <mat-spinner diameter="18" />
+          <span>Uploading...</span>
+          } @else {
+          <mat-icon>upload</mat-icon>
+          <span>Upload image</span>
+          }
+          <input
+            type="file"
+            accept="image/*"
+            [disabled]="uploadingReactionImage()"
+            (change)="uploadReactionImage(selected, $event)"
+          />
+        </label>
+      </div>
+
+      @if (selected.imageUrl) {
+      <img
+        class="editor-image-preview"
+        [src]="selected.imageUrl"
+        [alt]="selected.title"
+      />
+      } } @if (selected.reactionStimulusType === 'VIDEO') {
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Video URL</mat-label>
+        <input matInput [(ngModel)]="selected.videoUrl" />
+      </mat-form-field>
+
+      @if (selected.videoUrl) {
+      <video
+        class="editor-video-preview"
+        [src]="selected.videoUrl"
+        controls
+      ></video>
+      } } @if (selected.reactionStimulusType === 'MULTIPLE_CHOICE') {
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Prompt</mat-label>
+        <textarea matInput rows="3" [(ngModel)]="selected.stimulus"></textarea>
+      </mat-form-field>
+      }
+
       <mat-form-field appearance="outline" class="full-width">
         <mat-label>Delay ms</mat-label>
         <input matInput type="number" [(ngModel)]="selected.delayMs" />
+      </mat-form-field>
+
+      <div class="option-editor reaction-option-editor">
+        <h3>Options shown after delay</h3>
+        @for (option of selected.options; track option.displayOrder; let index =
+        $index) {
+        <div class="option-row">
+          <input
+            [(ngModel)]="option.label"
+            aria-label="Reaction option label"
+          />
+          <button
+            mat-icon-button
+            type="button"
+            aria-label="Remove option"
+            (click)="removeOption(selected, index)"
+          >
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
+        }
+        <button mat-stroked-button type="button" (click)="addOption(selected)">
+          <mat-icon>add</mat-icon>
+          Option
+        </button>
+      </div>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Fallback keys</mat-label>
+        <input matInput [(ngModel)]="selected.allowedKeys" />
       </mat-form-field>
       }
 

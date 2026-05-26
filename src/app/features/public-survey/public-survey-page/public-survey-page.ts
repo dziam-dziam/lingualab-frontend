@@ -41,6 +41,11 @@ export class PublicSurveyPage {
       ...this.answers().filter((item) => item.questionId !== answer.questionId),
       answer,
     ]);
+
+    const currentQuestion = this.survey()?.questions[this.currentIndex()];
+    if (currentQuestion?.type === 'REACTION_TIME' && answer.reactionTimeMs !== undefined) {
+      window.setTimeout(() => this.next(), 0);
+    }
   }
 
   next(): void {

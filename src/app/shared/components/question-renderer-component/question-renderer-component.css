@@ -31,11 +31,47 @@
   display: grid;
   min-height: 180px;
   place-items: center;
+  gap: 18px;
   border: 1px dashed #a9b8cc;
   border-radius: 8px;
+  padding: 20px;
   background: #f8fafc;
 }
 
 .reaction-box strong {
   font-size: 42px;
+}
+
+.reaction-target {
+  display: grid;
+  width: 100%;
+  justify-items: center;
+  gap: 12px;
+  text-align: center;
+}
+
+.reaction-target p {
+  margin: 0;
+  color: #172033;
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.question-video {
+  width: min(100%, 620px);
+  max-height: 360px;
+  border-radius: 8px;
+  background: #111827;
+}
+
+.reaction-options {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+}
+
+.reaction-ready {
+  color: #607089;
+  font-weight: 700;
 }

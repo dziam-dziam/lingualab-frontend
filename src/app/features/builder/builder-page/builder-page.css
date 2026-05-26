@@ -119,6 +119,31 @@
   color: #607089;
 }
 
+.card-image-preview {
+  display: block;
+  width: min(100%, 280px);
+  max-height: 150px;
+  margin-top: 10px;
+  border-radius: 8px;
+  object-fit: contain;
+  background: #edf2f8;
+}
+
+.editor-image-preview {
+  width: 100%;
+  max-height: 220px;
+  border-radius: 8px;
+  object-fit: contain;
+  background: #edf2f8;
+}
+
+.editor-video-preview {
+  width: 100%;
+  max-height: 220px;
+  border-radius: 8px;
+  background: #111827;
+}
+
 .drag-icon {
   color: #8493a8;
 }
@@ -131,6 +156,40 @@
 .option-editor {
   display: grid;
   gap: 10px;
+}
+
+.reaction-option-editor {
+  border: 1px solid #dbe3ef;
+  border-radius: 8px;
+  padding: 12px;
+  background: #f8fafc;
+}
+
+.reaction-option-editor h3 {
+  margin: 0;
+  color: #172033;
+  font-size: 14px;
+}
+
+.reaction-upload-row {
+  display: flex;
+}
+
+.reaction-upload-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 8px 12px;
+  border: 1px solid #c8d4e3;
+  border-radius: 8px;
+  background: #f8fafc;
+  color: #172033;
+  cursor: pointer;
+}
+
+.reaction-upload-button input {
+  display: none;
 }
 
 .option-row {

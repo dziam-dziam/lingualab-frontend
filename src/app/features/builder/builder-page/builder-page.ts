@@ -3,17 +3,17 @@ import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 import { ImageService } from '../../../core/api/image.service';
 import { SurveyService } from '../../../core/api/survey.service';
-import { ImageAsset, Question, QuestionType, Survey } from '../../../core/models/api.models';
+import { ImageAsset, Question, QuestionType, ReactionStimulusType, Survey } from '../../../core/models/api.models';
 import { NavigationComponent } from '../../../shared/components/navigation-component/navigation-component';
 import { ImageQuestionDialog } from '../image-question-dialog/image-question-dialog';
 
@@ -31,12 +31,12 @@ interface BuilderBlock {
     FormsModule,
     RouterLink,
     MatButtonModule,
-    MatDialogModule,
     MatFormFieldModule,
     MatIconModule,
     MatInputModule,
     MatProgressSpinnerModule,
     MatSelectModule,
+    MatDialogModule,
     MatSnackBarModule,
     NavigationComponent,
   ],
@@ -57,6 +57,7 @@ export class BuilderPage {
   readonly savingQuestion = signal(false);
   readonly addingQuestion = signal(false);
   readonly deletingQuestionId = signal<string | null>(null);
+  readonly uploadingReactionImage = signal(false);
   readonly publishing = signal(false);
   readonly error = signal('');
   readonly copied = signal(false);
@@ -196,6 +197,54 @@ export class BuilderPage {
     question.imageUrl = image?.imageUrl;
   }
 
+  uploadReactionImage(question: Question, event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    if (!file) return;
+
+    this.uploadingReactionImage.set(true);
+    this.imageService.upload(file).subscribe({
+      next: (image) => {
+        this.images.set([image, ...this.images()]);
+        question.imageKey = image.imageKey;
+        question.imageUrl = image.imageUrl;
+        this.uploadingReactionImage.set(false);
+        this.showSuccess('Image uploaded.');
+        input.value = '';
+      },
+      error: () => {
+        this.uploadingReactionImage.set(false);
+        this.showError('Could not upload image.');
+        input.value = '';
+      },
+    });
+  }
+
+  onReactionStimulusTypeSelected(question: Question, reactionStimulusType: ReactionStimulusType): void {
+    question.reactionStimulusType = reactionStimulusType;
+
+    if (reactionStimulusType !== 'IMAGE') {
+      question.imageKey = undefined;
+      question.imageUrl = undefined;
+    }
+
+    if (reactionStimulusType !== 'VIDEO') {
+      question.videoUrl = undefined;
+    }
+
+    if (reactionStimulusType === 'WORD') {
+      question.stimulus ||= 'BLUE';
+    }
+
+    if (reactionStimulusType === 'TEXT') {
+      question.stimulus ||= 'Read this text and choose an option.';
+    }
+
+    if (reactionStimulusType === 'MULTIPLE_CHOICE') {
+      question.stimulus ||= 'Choose the matching option.';
+    }
+  }
+
   publish(): void {
     this.publishing.set(true);
     this.surveyService.publish(this.surveyId).subscribe({
@@ -237,7 +286,19 @@ export class BuilderPage {
         ],
       };
     }
-    if (type === 'REACTION_TIME') return { ...base, stimulus: 'BLUE', allowedKeys: 'f,j', delayMs: 800 };
+    if (type === 'REACTION_TIME') {
+      return {
+        ...base,
+        reactionStimulusType: 'WORD',
+        stimulus: 'BLUE',
+        allowedKeys: 'f,j',
+        delayMs: 800,
+        options: [
+          { label: 'Option 1', value: 'option-1', displayOrder: 0 },
+          { label: 'Option 2', value: 'option-2', displayOrder: 1 },
+        ],
+      };
+    }
     return base;
   }
 
