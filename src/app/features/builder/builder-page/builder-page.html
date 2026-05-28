@@ -92,6 +92,18 @@
             [src]="question.imageUrl"
             [alt]="question.title"
           />
+          } @if (question.type === 'VIDEO' && question.videoUrl) {
+          <video
+            class="card-video-preview"
+            [src]="question.videoUrl"
+            muted
+          ></video>
+          } @if (question.type === 'AUDIO' && question.audioUrl) {
+          <audio
+            class="card-audio-preview"
+            [src]="question.audioUrl"
+            controls
+          ></audio>
           }
         </div>
         <button
@@ -162,7 +174,7 @@
           [ngModel]="selected.imageKey"
           (ngModelChange)="onImageSelected(selected, $event)"
         >
-          @for (image of images(); track image.id) {
+          @for (image of imageAssets(); track image.id) {
           <mat-option [value]="image.imageKey"
             >{{ image.originalFileName || image.imageKey }}</mat-option
           >
@@ -176,7 +188,69 @@
         [src]="selected.imageUrl"
         [alt]="selected.title"
       />
-      } } @if (selected.type === 'REACTION_TIME') {
+      } } @if (selected.type === 'VIDEO') {
+      <div class="reaction-upload-row">
+        <label class="reaction-upload-button">
+          @if (uploadingVideo()) {
+          <mat-spinner diameter="18" />
+          <span>Uploading...</span>
+          } @else {
+          <mat-icon>upload</mat-icon>
+          <span>Upload video</span>
+          }
+          <input
+            type="file"
+            accept="video/*"
+            [disabled]="uploadingVideo()"
+            (change)="uploadVideo(selected, $event)"
+          />
+        </label>
+      </div>
+
+      @if (selected.videoUrl) {
+      <video
+        class="editor-video-preview"
+        [src]="selected.videoUrl"
+        controls
+      ></video>
+      }
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Placeholder</mat-label>
+        <input matInput [(ngModel)]="selected.placeholder" />
+      </mat-form-field>
+      } @if (selected.type === 'AUDIO') {
+      <div class="reaction-upload-row">
+        <label class="reaction-upload-button">
+          @if (uploadingAudio()) {
+          <mat-spinner diameter="18" />
+          <span>Uploading...</span>
+          } @else {
+          <mat-icon>upload</mat-icon>
+          <span>Upload audio</span>
+          }
+          <input
+            type="file"
+            accept="audio/*"
+            [disabled]="uploadingAudio()"
+            (change)="uploadAudio(selected, $event)"
+          />
+        </label>
+      </div>
+
+      @if (selected.audioUrl) {
+      <audio
+        class="editor-audio-preview"
+        [src]="selected.audioUrl"
+        controls
+      ></audio>
+      }
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Placeholder</mat-label>
+        <input matInput [(ngModel)]="selected.placeholder" />
+      </mat-form-field>
+      } @if (selected.type === 'REACTION_TIME') {
       <mat-form-field appearance="outline" class="full-width">
         <mat-label>Reaction target</mat-label>
         <mat-select
@@ -186,6 +260,7 @@
           <mat-option value="TEXT">Text</mat-option>
           <mat-option value="IMAGE">Image</mat-option>
           <mat-option value="VIDEO">Video</mat-option>
+          <mat-option value="AUDIO">Audio</mat-option>
           <mat-option value="MULTIPLE_CHOICE">Choice prompt</mat-option>
         </mat-select>
       </mat-form-field>
@@ -221,10 +296,23 @@
         [alt]="selected.title"
       />
       } } @if (selected.reactionStimulusType === 'VIDEO') {
-      <mat-form-field appearance="outline" class="full-width">
-        <mat-label>Video URL</mat-label>
-        <input matInput [(ngModel)]="selected.videoUrl" />
-      </mat-form-field>
+      <div class="reaction-upload-row">
+        <label class="reaction-upload-button">
+          @if (uploadingVideo()) {
+          <mat-spinner diameter="18" />
+          <span>Uploading...</span>
+          } @else {
+          <mat-icon>upload</mat-icon>
+          <span>Upload video</span>
+          }
+          <input
+            type="file"
+            accept="video/*"
+            [disabled]="uploadingVideo()"
+            (change)="uploadVideo(selected, $event)"
+          />
+        </label>
+      </div>
 
       @if (selected.videoUrl) {
       <video
@@ -232,6 +320,31 @@
         [src]="selected.videoUrl"
         controls
       ></video>
+      } } @if (selected.reactionStimulusType === 'AUDIO') {
+      <div class="reaction-upload-row">
+        <label class="reaction-upload-button">
+          @if (uploadingAudio()) {
+          <mat-spinner diameter="18" />
+          <span>Uploading...</span>
+          } @else {
+          <mat-icon>upload</mat-icon>
+          <span>Upload audio</span>
+          }
+          <input
+            type="file"
+            accept="audio/*"
+            [disabled]="uploadingAudio()"
+            (change)="uploadAudio(selected, $event)"
+          />
+        </label>
+      </div>
+
+      @if (selected.audioUrl) {
+      <audio
+        class="editor-audio-preview"
+        [src]="selected.audioUrl"
+        controls
+      ></audio>
       } } @if (selected.reactionStimulusType === 'MULTIPLE_CHOICE') {
       <mat-form-field appearance="outline" class="full-width">
         <mat-label>Prompt</mat-label>

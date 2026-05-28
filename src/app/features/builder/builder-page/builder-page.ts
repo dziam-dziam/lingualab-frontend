@@ -1,5 +1,5 @@
 import { CdkDrag, CdkDragDrop, CdkDropList, moveItemInArray } from '@angular/cdk/drag-drop';
-import { Component, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
@@ -53,11 +53,16 @@ export class BuilderPage {
   readonly survey = signal<Survey | null>(null);
   readonly questions = signal<Question[]>([]);
   readonly images = signal<ImageAsset[]>([]);
+  readonly imageAssets = computed(() =>
+    this.images().filter((asset) => !asset.contentType || asset.contentType.startsWith('image/')),
+  );
   readonly loadingSurvey = signal(false);
   readonly savingQuestion = signal(false);
   readonly addingQuestion = signal(false);
   readonly deletingQuestionId = signal<string | null>(null);
   readonly uploadingReactionImage = signal(false);
+  readonly uploadingVideo = signal(false);
+  readonly uploadingAudio = signal(false);
   readonly publishing = signal(false);
   readonly error = signal('');
   readonly copied = signal(false);
@@ -68,6 +73,8 @@ export class BuilderPage {
     { type: 'TEXT', label: 'Text Question', icon: 'short_text' },
     { type: 'MULTIPLE_CHOICE', label: 'Multiple Choice', icon: 'radio_button_checked' },
     { type: 'IMAGE', label: 'Image Question', icon: 'image' },
+    { type: 'VIDEO', label: 'Video Question', icon: 'movie' },
+    { type: 'AUDIO', label: 'Audio Question', icon: 'graphic_eq' },
     { type: 'REACTION_TIME', label: 'Reaction Time', icon: 'timer' },
   ];
 
@@ -220,6 +227,14 @@ export class BuilderPage {
     });
   }
 
+  uploadVideo(question: Question, event: Event): void {
+    this.uploadMedia(question, event, 'video');
+  }
+
+  uploadAudio(question: Question, event: Event): void {
+    this.uploadMedia(question, event, 'audio');
+  }
+
   onReactionStimulusTypeSelected(question: Question, reactionStimulusType: ReactionStimulusType): void {
     question.reactionStimulusType = reactionStimulusType;
 
@@ -230,6 +245,10 @@ export class BuilderPage {
 
     if (reactionStimulusType !== 'VIDEO') {
       question.videoUrl = undefined;
+    }
+
+    if (reactionStimulusType !== 'AUDIO') {
+      question.audioUrl = undefined;
     }
 
     if (reactionStimulusType === 'TEXT') {
@@ -273,6 +292,8 @@ export class BuilderPage {
       options: [],
     };
     if (type === 'TEXT') return { ...base, placeholder: 'Type your answer' };
+    if (type === 'VIDEO') return { ...base, videoUrl: '', placeholder: 'Describe what you heard or saw' };
+    if (type === 'AUDIO') return { ...base, audioUrl: '', placeholder: 'Describe what you heard' };
     if (type === 'MULTIPLE_CHOICE') {
       return {
         ...base,
@@ -310,13 +331,43 @@ export class BuilderPage {
     if (type === 'TEXT') return 'Open response';
     if (type === 'MULTIPLE_CHOICE') return 'Choose one option';
     if (type === 'IMAGE') return 'Describe the image';
+    if (type === 'VIDEO') return 'Watch the video';
+    if (type === 'AUDIO') return 'Listen to the audio';
     return 'Reaction time trial';
+  }
+
+  private uploadMedia(question: Question, event: Event, mediaType: 'video' | 'audio'): void {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    if (!file) return;
+
+    const uploading = mediaType === 'video' ? this.uploadingVideo : this.uploadingAudio;
+    uploading.set(true);
+
+    this.imageService.upload(file).subscribe({
+      next: (asset) => {
+        this.images.set([asset, ...this.images()]);
+        if (mediaType === 'video') {
+          question.videoUrl = asset.imageUrl;
+        } else {
+          question.audioUrl = asset.imageUrl;
+        }
+        uploading.set(false);
+        this.showSuccess(`${mediaType === 'video' ? 'Video' : 'Audio'} uploaded.`);
+        input.value = '';
+      },
+      error: () => {
+        uploading.set(false);
+        this.showError(`Could not upload ${mediaType}.`);
+        input.value = '';
+      },
+    });
   }
 
   private openImageQuestionDialog(displayOrder: number): void {
     const dialogRef = this.dialog.open(ImageQuestionDialog, {
       data: {
-        images: this.images(),
+        images: this.imageAssets(),
         displayOrder,
       },
       autoFocus: false,

@@ -44,6 +44,30 @@
       (ngModelChange)="emitText()"
     ></textarea>
   </mat-form-field>
+  } @case ('VIDEO') { @if (question().videoUrl) {
+  <video class="question-video" [src]="question().videoUrl" controls></video>
+  }
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>{{ question().placeholder || 'Observation' }}</mat-label>
+    <textarea
+      matInput
+      rows="3"
+      [(ngModel)]="textAnswer"
+      (ngModelChange)="emitText()"
+    ></textarea>
+  </mat-form-field>
+  } @case ('AUDIO') { @if (question().audioUrl) {
+  <audio class="question-audio" [src]="question().audioUrl" controls></audio>
+  }
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>{{ question().placeholder || 'Observation' }}</mat-label>
+    <textarea
+      matInput
+      rows="3"
+      [(ngModel)]="textAnswer"
+      (ngModelChange)="emitText()"
+    ></textarea>
+  </mat-form-field>
   } @case ('REACTION_TIME') {
   <div class="reaction-box">
     <div class="reaction-target">
@@ -60,6 +84,12 @@
         [src]="question().videoUrl"
         controls
       ></video>
+      } } @case ('AUDIO') { @if (question().audioUrl) {
+      <audio
+        class="question-audio"
+        [src]="question().audioUrl"
+        controls
+      ></audio>
       } } @case ('MULTIPLE_CHOICE') {
       <p>{{ question().stimulus || 'Choose the matching option.' }}</p>
       } @case ('TEXT') {

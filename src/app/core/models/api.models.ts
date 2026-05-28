@@ -1,5 +1,5 @@
-export type QuestionType = 'TEXT' | 'MULTIPLE_CHOICE' | 'IMAGE' | 'REACTION_TIME';
-export type ReactionStimulusType = 'TEXT' | 'IMAGE' | 'VIDEO' | 'MULTIPLE_CHOICE';
+export type QuestionType = 'TEXT' | 'MULTIPLE_CHOICE' | 'IMAGE' | 'VIDEO' | 'AUDIO' | 'REACTION_TIME';
+export type ReactionStimulusType = 'TEXT' | 'IMAGE' | 'VIDEO' | 'AUDIO' | 'MULTIPLE_CHOICE';
 export type SurveyStatus = 'DRAFT' | 'PUBLISHED' | 'CLOSED';
 
 export interface LoginRequest {
@@ -36,6 +36,7 @@ export interface Question {
   imageUrl?: string;
   imageKey?: string;
   videoUrl?: string;
+  audioUrl?: string;
   reactionStimulusType?: ReactionStimulusType;
   stimulus?: string;
   delayMs?: number;

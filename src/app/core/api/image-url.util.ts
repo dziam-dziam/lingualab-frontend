@@ -29,6 +29,8 @@ export function normalizeQuestionImages(question: Question, apiBaseUrl: string):
   return {
     ...question,
     imageUrl: normalizeImageUrl(question.imageUrl, apiBaseUrl),
+    videoUrl: normalizeImageUrl(question.videoUrl, apiBaseUrl),
+    audioUrl: normalizeImageUrl(question.audioUrl, apiBaseUrl),
   };
 }
 

@@ -2,45 +2,62 @@
 
 <main class="page-shell">
   <header class="results-header">
-    <div>
-      <a routerLink="/dashboard" class="back-link">Dashboard</a>
-      <h1 class="section-title">{{ survey()?.title }} results</h1>
-      <p class="section-copy">{{ submissions().length }} participant submissions</p>
+    <a routerLink="/dashboard" class="back-link">Dashboard</a>
+    <div class="participant-summary">
+      <span>{{ participantCount() }}</span>
+      <strong>uczestników</strong>
     </div>
-    <button mat-flat-button type="button" (click)="downloadCsv()">
-      <mat-icon>download</mat-icon>
-      CSV
-    </button>
   </header>
 
-  <section class="panel table-panel">
-    <table mat-table [dataSource]="submissions()">
-      <ng-container matColumnDef="session">
-        <th mat-header-cell *matHeaderCellDef>Session</th>
-        <td mat-cell *matCellDef="let submission">{{ submission.sessionId }}</td>
-      </ng-container>
+  <section class="charts-list">
+    @for (chart of questionCharts(); track chart.questionId) {
+    <article class="panel chart-card">
+      <header class="chart-card-header">
+        <h2>{{ chart.title }}</h2>
+        <p>{{ chart.totalAnswers }} responses</p>
+      </header>
 
-      <ng-container matColumnDef="completedAt">
-        <th mat-header-cell *matHeaderCellDef>Completed</th>
-        <td mat-cell *matCellDef="let submission">{{ submission.completedAt }}</td>
-      </ng-container>
+      <div class="pie-layout">
+        <div
+          class="pie-chart"
+          [style.background]="chart.pieGradient"
+          aria-hidden="true"
+        >
+          @for (slice of chart.slices; track slice.label) { @if
+          (slice.showLabel) {
+          <span
+            class="pie-label"
+            [style.left.%]="slice.labelX"
+            [style.top.%]="slice.labelY"
+          >
+            {{ slice.percent }}
+          </span>
+          } }
+        </div>
 
-      <ng-container matColumnDef="answers">
-        <th mat-header-cell *matHeaderCellDef>Answers</th>
-        <td mat-cell *matCellDef="let submission">{{ submission.answers.length }}</td>
-      </ng-container>
+        <div class="legend">
+          @for (slice of chart.slices; track slice.label) {
+          <div class="legend-row">
+            <span class="legend-dot" [style.background]="slice.color"></span>
+            <span class="legend-label">{{ slice.label }}</span>
+            <strong>{{ slice.percent }}</strong>
+          </div>
+          }
+        </div>
+      </div>
 
-      <ng-container matColumnDef="meanReaction">
-        <th mat-header-cell *matHeaderCellDef>Mean reaction</th>
-        <td mat-cell *matCellDef="let submission">{{ meanReaction(submission) }}</td>
-      </ng-container>
-
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-    </table>
+      @if (chart.meanReactionMs !== undefined) {
+      <div class="reaction-stats">
+        <span>Mean {{ chart.meanReactionMs }} ms</span>
+        <span>Fastest {{ chart.fastestReactionMs }} ms</span>
+        <span>Slowest {{ chart.slowestReactionMs }} ms</span>
+      </div>
+      }
+    </article>
+    }
   </section>
 
   @if (error()) {
-    <p class="error">{{ error() }}</p>
+  <p class="error">{{ error() }}</p>
   }
 </main>

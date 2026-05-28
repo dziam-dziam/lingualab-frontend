@@ -64,6 +64,10 @@
   background: #111827;
 }
 
+.question-audio {
+  width: min(100%, 620px);
+}
+
 .reaction-options {
   display: flex;
   flex-wrap: wrap;
