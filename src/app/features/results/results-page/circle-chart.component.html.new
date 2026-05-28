@@ -1,0 +1,33 @@
+<svg
+  viewBox="0 0 120 120"
+  class="circle-chart-svg"
+  role="img"
+  [attr.aria-label]="title"
+>
+  @for (slice of svgSlices; let i = $index; track slice.label) {
+  <path [attr.d]="pathData[i]" [attr.fill]="slice.color" class="chart-slice" />
+  }
+
+  @for (slice of svgSlices; let i = $index; track slice.label) { @if
+  (shouldShowLabel(getPercentValue(slices[i]))) {
+  <text
+    [attr.x]="getPercentLabelPosition(slice).x"
+    [attr.y]="getPercentLabelPosition(slice).y"
+    class="percent-label"
+    text-anchor="middle"
+    dominant-baseline="middle"
+  >
+    {{ slice.percent }}
+  </text>
+  } }
+</svg>
+
+<div class="legend">
+  @for (slice of slices; track slice.label) {
+  <div class="legend-row">
+    <span class="legend-dot" [style.background]="slice.color"></span>
+    <span class="legend-label">{{ slice.label }}</span>
+    <strong>{{ slice.percent }}</strong>
+  </div>
+  }
+</div>

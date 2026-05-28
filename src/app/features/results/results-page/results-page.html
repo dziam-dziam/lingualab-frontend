@@ -17,33 +17,8 @@
         <p>{{ chart.totalAnswers }} responses</p>
       </header>
 
-      <div class="pie-layout">
-        <div
-          class="pie-chart"
-          [style.background]="chart.pieGradient"
-          aria-hidden="true"
-        >
-          @for (slice of chart.slices; track slice.label) { @if
-          (slice.showLabel) {
-          <span
-            class="pie-label"
-            [style.left.%]="slice.labelX"
-            [style.top.%]="slice.labelY"
-          >
-            {{ slice.percent }}
-          </span>
-          } }
-        </div>
-
-        <div class="legend">
-          @for (slice of chart.slices; track slice.label) {
-          <div class="legend-row">
-            <span class="legend-dot" [style.background]="slice.color"></span>
-            <span class="legend-label">{{ slice.label }}</span>
-            <strong>{{ slice.percent }}</strong>
-          </div>
-          }
-        </div>
+      <div class="chart-container">
+        <app-circle-chart [slices]="chart.slices" [title]="chart.title" />
       </div>
 
       @if (chart.meanReactionMs !== undefined) {
