@@ -5,22 +5,19 @@ import { ResponseService } from '../../../core/api/response.service';
 import { SurveyService } from '../../../core/api/survey.service';
 import { AnswerResponse, Question, SubmissionResponse, Survey } from '../../../core/models/api.models';
 import { NavigationComponent } from '../../../shared/components/navigation-component/navigation-component';
+import { CircleChartComponent } from './circle-chart.component';
 
 interface ChartSlice {
   label: string;
   value: number;
   percent: string;
   color: string;
-  labelX: number;
-  labelY: number;
-  showLabel: boolean;
 }
 
 interface QuestionChart {
   questionId: string;
   title: string;
   totalAnswers: number;
-  pieGradient: string;
   slices: ChartSlice[];
   meanReactionMs?: number;
   fastestReactionMs?: number;
@@ -31,7 +28,7 @@ const CHART_COLORS = ['#3366cc', '#dc3912', '#ff9900', '#109618', '#990099', '#0
 
 @Component({
   selector: 'app-results-page',
-  imports: [RouterLink, NavigationComponent],
+  imports: [RouterLink, NavigationComponent, CircleChartComponent],
   templateUrl: './results-page.html',
   styleUrl: './results-page.css',
 })
@@ -82,7 +79,6 @@ export class ResultsPage {
       title: question.title,
       totalAnswers: answers.length,
       slices,
-      pieGradient: this.buildPieGradient(slices),
       meanReactionMs: this.mean(reactionTimes),
       fastestReactionMs: reactionTimes.length ? Math.min(...reactionTimes) : undefined,
       slowestReactionMs: reactionTimes.length ? Math.max(...reactionTimes) : undefined,
@@ -99,27 +95,17 @@ export class ResultsPage {
         value: 0,
         percent: '0%',
         color: '#dbe3ef',
-        labelX: 50,
-        labelY: 50,
-        showLabel: false,
       }];
     }
 
-    let cursor = 0;
     return chartItems.map((item, index) => {
       const percentValue = (item.value / total) * 100;
-      const midpoint = cursor + percentValue / 2;
-      cursor += percentValue;
-      const radians = ((midpoint / 100) * 360 - 90) * (Math.PI / 180);
 
       return {
         label: item.label,
         value: item.value,
         percent: this.formatPercent(percentValue),
         color: CHART_COLORS[index % CHART_COLORS.length],
-        labelX: 50 + Math.cos(radians) * 28,
-        labelY: 50 + Math.sin(radians) * 28,
-        showLabel: percentValue >= 6,
       };
     });
   }
@@ -178,20 +164,5 @@ export class ResultsPage {
   private formatPercent(value: number): string {
     const rounded = Math.round(value * 10) / 10;
     return `${rounded.toFixed(1).replace('.0', '')}%`;
-  }
-
-  private buildPieGradient(slices: ChartSlice[]): string {
-    const total = slices.reduce((sum, slice) => sum + slice.value, 0);
-    if (total === 0) return '#edf2f8';
-
-    let cursor = 0;
-    const stops = slices.map((slice) => {
-      const start = cursor;
-      const end = cursor + (slice.value / total) * 100;
-      cursor = end;
-      return `${slice.color} ${start}% ${end}%`;
-    });
-
-    return `conic-gradient(${stops.join(', ')})`;
   }
 }
