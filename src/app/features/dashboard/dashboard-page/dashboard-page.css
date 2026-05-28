@@ -1,15 +1,113 @@
-.dashboard-header {
-  display: flex;
-  align-items: end;
-  justify-content: space-between;
-  margin-bottom: 24px;
+.dashboard-shell {
+  display: grid;
+  gap: 28px;
+}
+
+.dashboard-hero {
+  display: grid;
+  gap: 28px;
+  padding: 32px;
+  background: linear-gradient(135deg, rgba(255, 107, 26, 0.18), rgba(7, 27, 99, 0.08));
+  border-radius: 40px;
+  border: 1px solid rgba(255, 107, 26, 0.16);
+}
+
+.hero-copy {
+  display: grid;
+  gap: 16px;
+}
+
+.hero-copy .eyebrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.55rem 1rem;
+  border-radius: 999px;
+  background: rgba(255, 107, 26, 0.14);
+  color: #ff6b1a;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.hero-copy h1 {
+  margin: 0;
+  font-size: clamp(2.3rem, 3vw, 3.6rem);
+  line-height: 1.03;
+}
+
+.hero-copy p {
+  margin: 0;
+  max-width: 700px;
+  color: #39456f;
+  font-size: 1rem;
+}
+
+.hero-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.stat-card {
+  padding: 24px;
+  border-radius: 28px;
+  background: #ffffff;
+  border: 1px solid rgba(7, 27, 99, 0.08);
+  box-shadow: 0 18px 40px rgba(7, 27, 99, 0.06);
+}
+
+.stat-card span {
+  display: block;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  margin-bottom: 10px;
+}
+
+.stat-card strong {
+  display: block;
+  font-size: 2.4rem;
+  color: var(--text-primary);
 }
 
 .dashboard-grid {
   display: grid;
-  grid-template-columns: 340px 1fr;
-  gap: 20px;
+  grid-template-columns: 420px minmax(0, 1fr);
+  gap: 24px;
   align-items: start;
+}
+
+.create-panel {
+  display: grid;
+  gap: 24px;
+  padding: 28px;
+}
+
+.panel-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.panel-title.spaced {
+  padding: 24px 28px 0;
+}
+
+.panel-title h2 {
+  margin: 0;
+  font-size: 1.7rem;
+}
+
+.survey-count {
+  color: var(--text-muted);
+  font-weight: 700;
+}
+
+.create-panel mat-icon {
+  color: var(--accent);
+  font-size: 32px;
 }
 
 .button-content {
@@ -18,44 +116,75 @@
   gap: 8px;
 }
 
-.create-panel {
+.survey-list-panel {
   display: grid;
-  gap: 14px;
-  padding: 20px;
-}
-
-.create-panel h2,
-.survey-row h2 {
-  margin: 0;
-}
-
-.survey-list {
-  display: grid;
-  gap: 12px;
-}
-
-.survey-row {
-  display: flex;
-  justify-content: space-between;
   gap: 18px;
-  padding: 18px;
 }
 
-.survey-row p {
-  margin: 6px 0 10px;
-  color: #607089;
+.survey-card {
+  display: grid;
+  gap: 20px;
+  padding: 24px;
+  border-radius: 28px;
 }
 
-.status {
-  color: #2864a6;
-  font-size: 12px;
+.survey-card-main {
+  display: grid;
+  gap: 16px;
+}
+
+.survey-avatar {
+  width: 56px;
+  height: 56px;
+  display: grid;
+  place-items: center;
+  border-radius: 20px;
+  background: rgba(255, 107, 26, 0.12);
+  color: #ff6b1a;
+}
+
+.survey-avatar mat-icon {
+  font-size: 24px;
+}
+
+.survey-tag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 0.9rem;
+  border-radius: 999px;
+  background: rgba(7, 27, 99, 0.08);
+  color: var(--text-primary);
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.survey-card h3 {
+  margin: 12px 0 8px;
+  font-size: 1.25rem;
+}
+
+.survey-card p {
+  margin: 0;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+.survey-link {
+  color: var(--accent);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   font-weight: 700;
 }
 
-.row-actions {
+.survey-actions {
   display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 4px;
 }
 
 .delete-survey-button {
@@ -64,21 +193,26 @@
 
 .loading-state {
   display: grid;
-  min-height: 160px;
+  min-height: 180px;
   place-items: center;
 }
 
 .empty-state {
-  padding: 24px;
-  color: #607089;
+  padding: 28px;
+  color: var(--text-muted);
+  background: var(--surface-soft);
 }
 
 .error {
   color: #b42318;
 }
 
-@media (max-width: 820px) {
+@media (max-width: 980px) {
   .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-stat-grid {
     grid-template-columns: 1fr;
   }
 }

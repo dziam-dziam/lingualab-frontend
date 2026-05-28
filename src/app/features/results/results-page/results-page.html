@@ -1,19 +1,33 @@
 <app-navigation-component />
 
-<main class="page-shell">
-  <header class="results-header">
-    <div class="participant-summary">
-      <span>{{ participantCount() }}</span>
-      <strong>uczestników</strong>
+<main class="page-shell results-shell">
+  <section class="results-hero panel">
+    <div class="hero-copy">
+      <span class="eyebrow">Survey results</span>
+      <h1>Participant insights</h1>
+      <p>
+        Explore answer distribution, reaction times, and question-level
+        performance in a clean view.
+      </p>
     </div>
-  </header>
 
-  <section class="charts-list">
+    <div class="hero-stats">
+      <article class="metric-pill">
+        <span>Total participants</span>
+        <strong>{{ participantCount() }}</strong>
+      </article>
+    </div>
+  </section>
+
+  <section class="charts-grid">
     @for (chart of questionCharts(); track chart.questionId) {
     <article class="panel chart-card">
-      <header class="chart-card-header">
-        <h2>{{ chart.title }}</h2>
-      </header>
+      <div class="chart-card-header">
+        <div>
+          <span class="chart-label">Question</span>
+          <h2>{{ chart.title }}</h2>
+        </div>
+      </div>
 
       <div class="pie-layout">
         <div

@@ -1,19 +1,58 @@
 .topbar {
   position: sticky;
   top: 0;
-  z-index: 10;
-  border-bottom: 1px solid #dbe3ef;
-  background: rgba(255, 255, 255, 0.94);
-  backdrop-filter: blur(14px);
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 0 20px;
+  min-height: 74px;
+  background: rgba(245, 246, 250, 0.95);
+  backdrop-filter: blur(18px);
+  border-bottom: 1px solid rgba(7, 27, 99, 0.08);
+  box-shadow: 0 22px 45px rgba(7, 27, 99, 0.08);
 }
 
 .brand {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  font-weight: 750;
+  gap: 12px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  color: #071b63;
+}
+
+.brand mat-icon {
+  font-size: 24px;
+  color: #ff6b1a;
 }
 
 .spacer {
   flex: 1;
+}
+
+.topbar .mat-button,
+.topbar .mat-flat-button,
+.topbar button {
+  color: #071b63;
+  transition: transform 0.2s ease, color 0.2s ease, background 0.2s ease;
+  border-radius: 999px;
+}
+
+.topbar .mat-button:hover,
+.topbar .mat-flat-button:hover,
+.topbar button:hover {
+  transform: translateY(-1px);
+  color: #071b63;
+  background: rgba(255, 107, 26, 0.14);
+}
+
+.topbar .mat-flat-button {
+  background: #ff6b1a !important;
+  color: #ffffff !important;
+  box-shadow: 0 14px 28px rgba(255, 107, 26, 0.22);
+}
+
+.topbar .mat-button {
+  padding: 0.7rem 1rem;
 }

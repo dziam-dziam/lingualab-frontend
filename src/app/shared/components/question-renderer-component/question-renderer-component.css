@@ -6,11 +6,12 @@
 .question-copy h2 {
   margin: 0 0 6px;
   font-size: 22px;
+  color: #020817;
 }
 
 .question-copy p {
   margin: 0;
-  color: #607089;
+  color: #475569;
 }
 
 .option-group {
@@ -22,9 +23,9 @@
 .question-image {
   width: min(100%, 620px);
   max-height: 360px;
-  border-radius: 8px;
+  border-radius: 12px;
   object-fit: contain;
-  background: #edf2f8;
+  background: rgba(15, 23, 42, 0.04);
 }
 
 .reaction-box {
@@ -32,10 +33,10 @@
   min-height: 180px;
   place-items: center;
   gap: 18px;
-  border: 1px dashed #a9b8cc;
-  border-radius: 8px;
-  padding: 20px;
-  background: #f8fafc;
+  border: 1px dashed rgba(15, 23, 42, 0.18);
+  border-radius: 16px;
+  padding: 22px;
+  background: rgba(15, 23, 42, 0.04);
 }
 
 .reaction-box strong {
@@ -52,7 +53,7 @@
 
 .reaction-target p {
   margin: 0;
-  color: #172033;
+  color: #020817;
   font-size: 22px;
   font-weight: 700;
 }
@@ -60,8 +61,9 @@
 .question-video {
   width: min(100%, 620px);
   max-height: 360px;
-  border-radius: 8px;
+  border-radius: 12px;
   background: #111827;
+  color: #f8fafc;
 }
 
 .question-audio {
@@ -76,6 +78,6 @@
 }
 
 .reaction-ready {
-  color: #607089;
+  color: #475569;
   font-weight: 700;
 }

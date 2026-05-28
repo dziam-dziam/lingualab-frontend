@@ -44,6 +44,14 @@ export class DashboardPage {
     description: '',
   };
 
+  publishedCount(): number {
+    return this.surveys().filter((item) => item.status === 'PUBLISHED').length;
+  }
+
+  draftCount(): number {
+    return this.surveys().filter((item) => item.status === 'DRAFT').length;
+  }
+
   constructor() {
     this.loadSurveys();
   }

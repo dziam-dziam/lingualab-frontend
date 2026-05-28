@@ -2,32 +2,63 @@
 
 <main class="auth-shell">
   <section class="panel auth-panel">
-    <h1>Create account</h1>
-    <p>Start a secure workspace for surveys and experiments.</p>
+    <div class="auth-header">
+      <span class="eyebrow">Join LinguaLab</span>
+      <h1>Create your account</h1>
+      <p>
+        Start building surveys for your language research with a polished
+        workspace.
+      </p>
+    </div>
 
     <form class="form-grid" (ngSubmit)="register()">
       <mat-form-field appearance="outline" class="full-width">
         <mat-label>Full name</mat-label>
-        <input matInput name="fullName" [(ngModel)]="registerData.fullName" autocomplete="name" required />
+        <input
+          matInput
+          name="fullName"
+          [(ngModel)]="registerData.fullName"
+          autocomplete="name"
+          required
+        />
       </mat-form-field>
 
       <mat-form-field appearance="outline" class="full-width">
         <mat-label>Email</mat-label>
-        <input matInput type="email" name="email" [(ngModel)]="registerData.email" autocomplete="username" required />
+        <input
+          matInput
+          type="email"
+          name="email"
+          [(ngModel)]="registerData.email"
+          autocomplete="username"
+          required
+        />
       </mat-form-field>
 
       <mat-form-field appearance="outline" class="full-width">
         <mat-label>Password</mat-label>
-        <input matInput type="password" name="password" [(ngModel)]="registerData.password" autocomplete="new-password" required />
+        <input
+          matInput
+          type="password"
+          name="password"
+          [(ngModel)]="registerData.password"
+          autocomplete="new-password"
+          required
+        />
       </mat-form-field>
 
       @if (error()) {
-        <p class="error">{{ error() }}</p>
+      <p class="error">{{ error() }}</p>
       }
 
-      <button mat-flat-button type="submit" [disabled]="loading()">Register</button>
+      <button mat-flat-button type="submit" [disabled]="loading()">
+        Create account
+      </button>
     </form>
 
-    <a routerLink="/login">Already have an account?</a>
+    <div class="auth-footer">
+      <span>Already registered?</span>
+      <a routerLink="/login">Sign in</a>
+    </div>
   </section>
 </main>

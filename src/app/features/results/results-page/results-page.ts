@@ -31,7 +31,7 @@ const CHART_COLORS = ['#3366cc', '#dc3912', '#ff9900', '#109618', '#990099', '#0
 
 @Component({
   selector: 'app-results-page',
-  imports: [RouterLink, NavigationComponent],
+  imports: [NavigationComponent],
   templateUrl: './results-page.html',
   styleUrl: './results-page.css',
 })

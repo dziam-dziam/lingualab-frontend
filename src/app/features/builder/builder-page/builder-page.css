@@ -14,15 +14,16 @@
 .builder-top h1 {
   margin: 4px 0;
   font-size: 30px;
+  color: #020817;
 }
 
 .builder-top p {
   margin: 0;
-  color: #607089;
+  color: #475569;
 }
 
 .back-link {
-  color: #2864a6;
+  color: #0f172a;
   font-weight: 700;
 }
 
@@ -65,11 +66,23 @@
   gap: 8px;
   margin-bottom: 8px;
   padding: 10px;
-  border: 1px solid #dbe3ef;
-  border-radius: 8px;
-  background: #f8fafc;
-  color: #172033;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  border-radius: 12px;
+  background: #ffffff;
+  color: #020817;
   cursor: grab;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+}
+
+.block-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 18px 30px rgba(2, 7, 24, 0.08);
+  background: rgba(15, 23, 42, 0.04);
+}
+
+.block-button:active {
+  cursor: grabbing;
+  transform: translateY(0);
 }
 
 .canvas {
@@ -79,16 +92,17 @@
 .canvas-header {
   display: flex;
   justify-content: space-between;
-  color: #607089;
+  color: #475569;
 }
 
 .canvas-empty {
   display: grid;
   min-height: 420px;
   place-items: center;
-  border: 1px dashed #a9b8cc;
-  border-radius: 8px;
-  color: #607089;
+  border: 1px dashed rgba(15, 23, 42, 0.16);
+  border-radius: 12px;
+  color: #475569;
+  background: rgba(15, 23, 42, 0.03);
 }
 
 .question-card {
@@ -97,26 +111,38 @@
   gap: 12px;
   align-items: center;
   margin-bottom: 10px;
-  padding: 14px;
-  border: 1px solid #dbe3ef;
-  border-radius: 8px;
+  padding: 16px;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  border-radius: 14px;
   background: #ffffff;
-  cursor: pointer;
+  cursor: grab;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+}
+
+.question-card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 20px 30px rgba(2, 7, 24, 0.08);
+  border-color: rgba(15, 23, 42, 0.14);
+}
+
+.question-card:active {
+  cursor: grabbing;
 }
 
 .question-card span {
-  color: #2864a6;
+  color: #0f172a;
   font-size: 12px;
   font-weight: 700;
 }
 
 .question-card h3 {
   margin: 4px 0;
+  color: #020817;
 }
 
 .question-card p {
   margin: 0;
-  color: #607089;
+  color: #475569;
 }
 
 .card-image-preview {
@@ -124,9 +150,9 @@
   width: min(100%, 280px);
   max-height: 150px;
   margin-top: 10px;
-  border-radius: 8px;
+  border-radius: 12px;
   object-fit: contain;
-  background: #edf2f8;
+  background: rgba(15, 23, 42, 0.06);
 }
 
 .card-video-preview {
@@ -134,8 +160,9 @@
   width: min(100%, 280px);
   max-height: 150px;
   margin-top: 10px;
-  border-radius: 8px;
+  border-radius: 12px;
   background: #111827;
+  color: #f8fafc;
 }
 
 .card-audio-preview {
@@ -157,6 +184,7 @@
   max-height: 220px;
   border-radius: 8px;
   background: #111827;
+  color: #f8fafc;
 }
 
 .editor-audio-preview {
@@ -178,15 +206,15 @@
 }
 
 .reaction-option-editor {
-  border: 1px solid #dbe3ef;
-  border-radius: 8px;
-  padding: 12px;
-  background: #f8fafc;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  border-radius: 12px;
+  padding: 14px;
+  background: rgba(15, 23, 42, 0.04);
 }
 
 .reaction-option-editor h3 {
   margin: 0;
-  color: #172033;
+  color: #020817;
   font-size: 14px;
 }
 
@@ -200,11 +228,17 @@
   gap: 8px;
   min-height: 40px;
   padding: 8px 12px;
-  border: 1px solid #c8d4e3;
-  border-radius: 8px;
-  background: #f8fafc;
-  color: #172033;
+  border: 1px solid rgba(15, 23, 42, 0.12);
+  border-radius: 12px;
+  background: #ffffff;
+  color: #020817;
   cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.reaction-upload-button:hover {
+  background: rgba(15, 23, 42, 0.04);
+  transform: translateY(-1px);
 }
 
 .reaction-upload-button input {
@@ -219,9 +253,11 @@
 
 .option-row input {
   min-width: 0;
-  border: 1px solid #ccd6e4;
-  border-radius: 8px;
+  border: 1px solid rgba(15, 23, 42, 0.12);
+  border-radius: 12px;
   padding: 10px;
+  background: #ffffff;
+  color: #020817;
 }
 
 .delete-question-button,
@@ -239,7 +275,7 @@
   min-height: 180px;
   place-items: center;
   gap: 10px;
-  color: #607089;
+  color: #475569;
 }
 
 .error {
@@ -248,6 +284,8 @@
 
 .cdk-drag-preview {
   box-shadow: 0 12px 24px rgba(23, 32, 51, 0.18);
+  transition: none !important;
+  animation: none !important;
 }
 
 @media (max-width: 1100px) {

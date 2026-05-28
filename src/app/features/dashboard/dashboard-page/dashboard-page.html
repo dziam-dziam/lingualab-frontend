@@ -1,63 +1,109 @@
 <app-navigation-component />
 
-<main class="page-shell">
-  <section class="dashboard-header">
-    <div>
-      <h1 class="section-title">Research dashboard</h1>
-      <p class="section-copy">
-        Create, publish, and review linguistic experiments.
+<main class="page-shell dashboard-shell">
+  <section class="dashboard-hero panel hero-card">
+    <div class="hero-copy">
+      <span class="eyebrow">Research workspace</span>
+      <h1>Research dashboard</h1>
+      <p>
+        Manage surveys, monitor study progress, and launch experiments with
+        confidence.
       </p>
+    </div>
+
+    <div class="hero-stat-grid">
+      <article class="stat-card">
+        <span>Surveys</span>
+        <strong>{{ surveys().length }}</strong>
+      </article>
+      <article class="stat-card">
+        <span>Published</span>
+        <strong>{{ publishedCount() }}</strong>
+      </article>
+      <article class="stat-card">
+        <span>Drafts</span>
+        <strong>{{ draftCount() }}</strong>
+      </article>
     </div>
   </section>
 
   <section class="dashboard-grid">
-    <form class="panel create-panel" (ngSubmit)="createSurvey()">
-      <h2>New study</h2>
-      <mat-form-field appearance="outline" class="full-width">
-        <mat-label>Title</mat-label>
-        <input matInput name="title" [(ngModel)]="newSurvey.title" required />
-      </mat-form-field>
-      <mat-form-field appearance="outline" class="full-width">
-        <mat-label>Description</mat-label>
-        <textarea
-          matInput
-          rows="4"
-          name="description"
-          [(ngModel)]="newSurvey.description"
-        ></textarea>
-      </mat-form-field>
-      <button mat-flat-button type="submit" [disabled]="creating()">
-        @if (creating()) {
-        <mat-spinner diameter="18" />
-        } @else {
-        <span class="button-content">
-          <mat-icon>add</mat-icon>
-          <span>Create</span>
-        </span>
-        }
-      </button>
-    </form>
+    <aside class="panel create-panel">
+      <div class="panel-title">
+        <div>
+          <span class="eyebrow">New study</span>
+          <h2>Create a survey</h2>
+        </div>
+        <mat-icon>add_circle</mat-icon>
+      </div>
 
-    <section class="survey-list">
+      <form class="form-grid" (ngSubmit)="createSurvey()">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Title</mat-label>
+          <input matInput name="title" [(ngModel)]="newSurvey.title" required />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Description</mat-label>
+          <textarea
+            matInput
+            rows="4"
+            name="description"
+            [(ngModel)]="newSurvey.description"
+          ></textarea>
+        </mat-form-field>
+
+        <button mat-flat-button type="submit" [disabled]="creating()">
+          @if (creating()) {
+          <mat-spinner diameter="18" />
+          } @else {
+          <span class="button-content">
+            <mat-icon>add</mat-icon>
+            <span>Create survey</span>
+          </span>
+          }
+        </button>
+      </form>
+    </aside>
+
+    <section class="survey-list-panel">
+      <div class="panel-title spaced">
+        <div>
+          <span class="eyebrow">Recently added</span>
+          <h2>My surveys</h2>
+        </div>
+        <span class="survey-count">{{ surveys().length }} items</span>
+      </div>
+
       @if (loading()) {
       <div class="loading-state">
         <mat-spinner diameter="32" />
       </div>
       } @else if (surveys().length === 0) {
-      <article class="panel empty-state">No studies yet.</article>
+      <article class="panel empty-state">No surveys created yet.</article>
       } @else { @for (survey of surveys(); track survey.id) {
-      <article class="panel survey-row">
-        <div>
-          <span class="status">{{ survey.status }}</span>
-          <h2>{{ survey.title }}</h2>
-          <p>{{ survey.description }}</p>
-          @if (survey.status === 'PUBLISHED') {
-          <a [href]="survey.publicUrl" target="_blank" rel="noopener"
-            >{{ survey.publicUrl }}</a
-          >
-          }
+      <article class="survey-card panel">
+        <div class="survey-card-main">
+          <div class="survey-avatar">
+            <mat-icon>insights</mat-icon>
+          </div>
+          <div>
+            <span class="survey-tag">{{ survey.status }}</span>
+            <h3>{{ survey.title }}</h3>
+            <p>{{ survey.description }}</p>
+            @if (survey.status === 'PUBLISHED') {
+            <a
+              class="survey-link"
+              [href]="survey.publicUrl"
+              target="_blank"
+              rel="noopener"
+              >View public link</a
+            >
+            }
+          </div>
         </div>
-        <div class="row-actions">
+
+        <div class="survey-actions">
           <a
             mat-icon-button
             [routerLink]="['/builder', survey.id]"
